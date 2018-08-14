@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title></title>  
+    <link rel="stylesheet" href="/css/pintuer.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/pintuer.js"></script>
+    <script src="/js/common.js"></script>
+</head>
+<body>
+<form method="post" action="">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 用户管理</strong></div>
+    <div class="button-group"> <a class="button" href="/user/add">添加</a></div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th>ID</th>
+        <th>登录名</th>       
+        <th>邮箱</th>
+        <th>创建时间</th>
+        <th>操作</th>       
+      </tr>      
+<?php foreach($list as $value){ ?>      
+  <tr>
+          <td><?=$value['id']?></td>
+          <td><?=$value['login_name']?></td>
+          <td><?=$value['email']?></td>
+          <td><?=date("Y-m-d H:i:s",$value['createtime'])?></td>  
+          <td>
+<div class="button-group"> 
+<a href="/user/edit?user_id=<?=$value['id']?>" class="button">编辑</a> 
+<a data-user="<?=$value['id']?>" class="button del_button"> 删除</a>
+</div>
+</td>
+        </tr>
+<?php }?>
+      <tr>
+        <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
+      </tr>
+    </table>
+  </div>
+</form>
+<script type="text/javascript">
+$(".del_button").click(function(){
+    var userid = $(this).data("user");
+    Ajax("/user/del" , {"user_id":userid}); 
+});
+$("#checkall").click(function(){ 
+  $("input[name='id[]']").each(function(){
+	  if (this.checked) {
+		  this.checked = false;
+	  }
+	  else {
+		  this.checked = true;
+	  }
+  });
+})
+
+function DelSelect(){
+	var Checkbox=false;
+	 $("input[name='id[]']").each(function(){
+	  if (this.checked==true) {		
+		Checkbox=true;	
+	  }
+	});
+	if (Checkbox){
+		var t=confirm("您确认要删除选中的内容吗？");
+		if (t==false) return false; 		
+	}
+	else{
+		alert("请选择您要删除的内容!");
+		return false;
+	}
+}
+
+</script>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="/css/pintuer.css">
+<link rel="stylesheet" href="/css/admin.css">
+<script src="/js/jquery.js"></script>
+<script src="/js/pintuer.js"></script>
+</head>
+<body>
+<div class="panel admin-panel margin-top" id="add">
+  <div class="panel-head"><input type="button" value="添加作者" id="add_button"></div>
+  <div class="body-content" style="display: none"  id="edit_window">
+    <form method="post" class="form-x" action="/author/add">
+      <div class="form-group" >
+        <div class="label">
+          <label>作者姓名：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="name" name="name" data-validate="required:请输入作者姓名" />
+          <div class="tips"></div>
+        </div>
+          <div class="label">
+              <label>作者简介：</label>
+          </div>
+          <div class="field">
+              <input type="text" class="input w50" value="" id="description" name="description" data-validate="required:请输入作者简介" />
+              <div class="tips"></div>
+          </div>
+          <input type="hidden" value="" name="author_id" id="author_id">
+          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 作者管理</strong></div>
+    <table class="table table-hover text-center">
+        <tr>
+            <th>ID</th>
+            <th>作者名称</th>
+            <th>简介</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        <?php foreach($list as $value){ ?>
+            <tr>
+                <td><?=$value['id']?></td>
+                <td><?=$value['author_name']?></td>
+                <td><?=$value['description']?></td>
+                <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
+                <td>
+                    <div class="button-group">
+                        <a class="button edit_button" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
+                        <a href="/author/del?author_id=<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" class="button del_button"> 删除</a>
+                    </div>
+                </td>
+            </tr>
+        <?php }?>
+        <tr>
+            <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(".edit_button").click(
+        function () {
+            var author_id = $(this).data("author_id");
+            $("#author_id").val(author_id);
+            $("#name").val($(this).data("author_name"));
+            $("#description").val($(this).data("description"));
+            $("#edit_window").show();
+        }
+    );
+    $("#add_button").click(
+        function () {
+            $("#author_id").val("");
+            $("#edit_window").show();
+        }
+    );
+    $(".del_button").click(function () {
+        var author_name = $(this).data("author_name");
+        if(confirm("确定要删除吗？（"+author_name+"）")){
+            return true;
+        }else{
+            return false;
+        }
+    });
+</script>
+</body>
+</html>
