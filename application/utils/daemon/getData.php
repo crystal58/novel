@@ -27,6 +27,9 @@ try{
         preg_match("#$rule#is", $data, $contentRet);
         $content = $contentRet[$contentRule['num']];
         $novelChapter = new NovelChapterModel();
+        if(empty($content)){
+            \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
+        }
         $sqlData = array(
             "novel_id" => $value['novel_id'],
             "title" => $value['title'],
