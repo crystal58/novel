@@ -8,11 +8,8 @@ namespace YC\File;
  */
 class fastDfsUpload{
     public function store($file,$suffix){
-        //$a = fastdfs_storage_upload_by_filename("/var/www/html/novel/public/images/11.jpg");
 
-        $fileInfo = fastdfs_storage_upload_by_filename1($file,$suffix);
-        echo json_encode(array($file,$suffix,$fileInfo));
-        exit;
+        $fileInfo = \fastdfs_storage_upload_by_filename1($file,$suffix);
         return $fileInfo;
     }
 

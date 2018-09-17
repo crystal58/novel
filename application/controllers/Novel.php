@@ -35,14 +35,12 @@ class NovelController extends AbstractController{
         try {
             if ($this->getRequest()->isPost()) {
                 $imgInfo = $_FILES['img'];
+                $fileId = "";
                 if($_FILES['img']){
-                    $a = \fastdfs_storage_upload_by_filename1("/var/www/html/novel/public/images/11.jpg","jpg");
-                    var_dump($a);exit;
+
                     $file = new \YC\File\upFile();
-                    $fileData = $file->store($imgInfo);
-                    var_dump($fileData);exit;
+                    $fileId = $file->store($imgInfo);
                 }
-                exit;
                 $name = $this->getPost("name");
                 if (empty($name)) {
                     throw new Exception("参数错误(name={$name})", 400);
@@ -63,9 +61,9 @@ class NovelController extends AbstractController{
                     "update_time" => time(),
                     "novel_class_id" => $this->getPost("novel_class"),
                     "novel_id" => $this->getPost("novel_id"),
-                    "record_status" => $this->getPost("record_status")
+                    "record_status" => $this->getPost("record_status"),
+                    "pic" => $fileId
                 );
-                //echo json_encode($params);exit;
                 $novelModel = new NovelModel();
                 $return = $novelModel->replaceNovel($params);
                 if(!$return){
