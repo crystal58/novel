@@ -34,6 +34,15 @@ class NovelController extends AbstractController{
 
         try {
             if ($this->getRequest()->isPost()) {
+                $imgInfo = $_FILES['img'];
+                if($_FILES['img']){
+                    $a = \fastdfs_storage_upload_by_filename1("/var/www/html/novel/public/images/11.jpg","jpg");
+                    var_dump($a);exit;
+                    $file = new \YC\File\upFile();
+                    $fileData = $file->store($imgInfo);
+                    var_dump($fileData);exit;
+                }
+                exit;
                 $name = $this->getPost("name");
                 if (empty($name)) {
                     throw new Exception("参数错误(name={$name})", 400);
@@ -55,7 +64,6 @@ class NovelController extends AbstractController{
                     "novel_class_id" => $this->getPost("novel_class"),
                     "novel_id" => $this->getPost("novel_id"),
                     "record_status" => $this->getPost("record_status")
-
                 );
                 //echo json_encode($params);exit;
                 $novelModel = new NovelModel();
@@ -121,7 +129,13 @@ class NovelController extends AbstractController{
             $novelId = $this->get("id");
             if($novelId > 0){
                 $novelModel = new NovelTmpModel();
-                $result = $novelModel->update(array("status" => NovelTmpModel::NOVEL_TMP_STATUS_READY),array("novel_id" => $novelId));
+                $where = array(
+                    "AND" => array(
+                        "novel_id" => $novelId,
+                        "status" => NovelTmpModel::NOVEL_TMP_STATUS_INIT
+                    )
+                );
+                $result = $novelModel->update(array("status" => NovelTmpModel::NOVEL_TMP_STATUS_READY),$where);
             }
             $this->redirect("/novel/subject?id=".$novelId);
         }catch (Exception $e){
