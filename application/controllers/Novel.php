@@ -34,13 +34,7 @@ class NovelController extends AbstractController{
 
         try {
             if ($this->getRequest()->isPost()) {
-                $imgInfo = $_FILES['img'];
-                $fileId = "";
-                if($_FILES['img']){
 
-                    $file = new \YC\File\upFile();
-                    $fileId = $file->store($imgInfo);
-                }
                 $name = $this->getPost("name");
                 if (empty($name)) {
                     throw new Exception("参数错误(name={$name})", 400);
@@ -51,6 +45,7 @@ class NovelController extends AbstractController{
                     throw new Exception("参数错误（author={$author}）",400);
                 }
                 $description = $this->getPost("description");
+                $novelClassId = $this->getPost("novel_class");
                 $params = array(
                     "name" => $name,
                     "author_id" => $authorData[0],
@@ -59,11 +54,17 @@ class NovelController extends AbstractController{
                     "operator_id" => $this->_operatorId,
                     "create_time" => time(),
                     "update_time" => time(),
-                    "novel_class_id" => $this->getPost("novel_class"),
+                    "novel_class_id" => $novelClassId,
+                    "novel_class_name" => NovelModel::$_novel_class_type[$novelClassId],
                     "novel_id" => $this->getPost("novel_id"),
                     "record_status" => $this->getPost("record_status"),
-                    "pic" => $fileId
                 );
+                $imgInfo = $_FILES['img'];
+                if($_FILES['img']){
+                    $file = new \YC\File\upFile();
+                    $fileId = $file->store($imgInfo);
+                    $params['pic'] = $fileId;
+                }
                 $novelModel = new NovelModel();
                 $return = $novelModel->replaceNovel($params);
                 if(!$return){
