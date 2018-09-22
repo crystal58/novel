@@ -36,8 +36,9 @@
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-novel_class="<?=$value['novel_class_id']?>" data-author_id="<?=$value['author_id'].'_'.$value['author_name']?>" data-novel_id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-description="<?=$value['content']?>">编辑</a>
-                        </div>
+<!--                        <a class="button edit_button" data-novel_class="--><?//=$value['novel_class_id']?><!--" data-author_id="--><?//=$value['author_id'].'_'.$value['author_name']?><!--" data-novel_id="--><?//=$value['id']?><!--" data-name="--><?//=$value['name']?><!--" data-description="--><?//=$value['content']?><!--">编辑</a>-->
+                        <a class="button edit_button">编辑</a>
+                    </div>
                 </td>
             </tr>
         <?php }?>
