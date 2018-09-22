@@ -4,7 +4,7 @@ namespace YC;
 
 class LoggerHelper {
 
-    const LOGERPREFIX = '/var/log/noval/';
+    const LOGERPREFIX = '/var/log/novel/';
 
     private static $_logs = [];
     private static $logLevel = [
