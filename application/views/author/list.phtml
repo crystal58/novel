@@ -15,7 +15,7 @@
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><input type="button" value="添加作者" id="add_button"></div>
   <div class="body-content" style="display: none"  id="edit_window">
-    <form method="post" class="form-x" action="/author/add">
+    <form method="post" class="form-x" action="/author/add" enctype="multipart/form-data">
       <div class="form-group" >
         <div class="label">
           <label>作者姓名：</label>
@@ -24,6 +24,14 @@
           <input type="text" class="input w50" value="" id="name" name="name" data-validate="required:请输入作者姓名" />
           <div class="tips"></div>
         </div>
+          <div class="label">
+              <label>作者头像：</label>
+          </div>
+          <div class="field">
+              <img id="author_pic" src="" width="30px" height="30px">
+              <input type="file" name="img" id="img" class="input w50">
+              <div class="tips"></div>
+          </div>
           <div class="label">
               <label>作者简介：</label>
           </div>
@@ -55,8 +63,8 @@
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
-                        <a href="/author/del?author_id=<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" class="button del_button"> 删除</a>
+                        <a class="button edit_button" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
+                        <a href="/author/del?author_id=<?=$value['id']?>"  data-author_name="<?=$value['author_name']?>" class="button del_button"> 删除</a>
                     </div>
                 </td>
             </tr>
@@ -73,6 +81,7 @@
             $("#author_id").val(author_id);
             $("#name").val($(this).data("author_name"));
             $("#description").val($(this).data("description"));
+            $("#author_pic").attr("src",$(this).data("pic"))
             $("#edit_window").show();
         }
     );

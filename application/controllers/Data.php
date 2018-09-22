@@ -76,6 +76,9 @@ class DataController extends AbstractController{
                 $postTitle = $this->getPost("title");
                 $data = iconv('gb2312','UTF-8//IGNORE',$data);
                 preg_match("/$postTitle/isU",$data,$result);
+                if(empty($result)){
+                    throw new Exception("正则出错了");
+                }
                 $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
                 preg_match_all($reg,$result[0],$urlRet);
 

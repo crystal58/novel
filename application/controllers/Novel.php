@@ -60,7 +60,7 @@ class NovelController extends AbstractController{
                     "record_status" => $this->getPost("record_status"),
                 );
                 $imgInfo = $_FILES['img'];
-                if($_FILES['img']){
+                if($_FILES['img']['name']){
                     $file = new \YC\File\upFile();
                     $fileId = $file->store($imgInfo);
                     $params['pic'] = $fileId;

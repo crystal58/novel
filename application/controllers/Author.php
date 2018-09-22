@@ -39,6 +39,12 @@ class AuthorController extends AbstractController{
 
                 );
               //  echo json_encode($params);exit;
+                $imgInfo = $_FILES['img'];
+                if($_FILES['img']['name']){
+                    $file = new \YC\File\upFile();
+                    $fileId = $file->store($imgInfo);
+                    $params['pic'] = $fileId;
+                }
                 $authorModel = new AuthorModel();
                 $return = $authorModel->replaceAuthor($params);
                 if(!$return){
