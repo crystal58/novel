@@ -36,6 +36,7 @@ class AuthorController extends AbstractController{
                     "create_time" => time(),
                     "update_time" => time(),
                     "author_id" => $this->getPost("author_id"),
+                    "novel_class_id" => $this->getPost("novel_class_id")
 
                 );
               //  echo json_encode($params);exit;
