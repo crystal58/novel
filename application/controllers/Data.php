@@ -74,7 +74,10 @@ class DataController extends AbstractController{
                // echo json_encode($codeData);exit;
 
                 $postTitle = $this->getPost("title");
-                $data = iconv('gb2312','UTF-8//IGNORE',$data);
+                $code = $this->get("code");
+                if($code != "UTF-8"){
+                    $data = iconv($code,'UTF-8//IGNORE',$data);
+                }
                 preg_match("/$postTitle/isU",$data,$result);
                 if(empty($result)){
                     throw new Exception("正则出错了");
