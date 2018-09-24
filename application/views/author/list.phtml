@@ -63,7 +63,6 @@
             <th>ID</th>
             <th>作者名称</th>
             <th>作者类别</th>
-            <th>简介</th>
             <th>创建时间</th>
             <th>操作</th>
         </tr>
@@ -72,7 +71,6 @@
                 <td><?=$value['id']?></td>
                 <td><?=$value['author_name']?></td>
                 <td><?=isset(NovelModel::$_novel_class_type[$value['novel_class_id']])?NovelModel::$_novel_class_type[$value['novel_class_id']]:"未定义"?></td>
-                <td><?=$value['description']?></td>
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
