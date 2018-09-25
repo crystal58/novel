@@ -39,7 +39,8 @@ try{
             "keywords" => $value['title'],
             "chapter_order" => $value['order'],
             "create_time" => time(),
-            "update_time" => time()
+            "update_time" => time(),
+            "status" => 1
         );
         $result = $novelChapter->insert($sqlData);
         if($result){
