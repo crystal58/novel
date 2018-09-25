@@ -15,18 +15,20 @@ class DataController extends AbstractController{
             if($request->isPost()){
                 $url = $this->getPost("url");
                 $data = file_get_contents($url);
-                $postTitle = $this->getPost("title");
-                preg_match("#$postTitle#",$data,$result);
-                $titleNum = $this->getPost("title_num");
-                $title = $result[$titleNum];
+//                $postTitle = $this->getPost("title");
+//                preg_match("#$postTitle#",$data,$result);
+//                $titleNum = $this->getPost("title_num");
+//                $title = $result[$titleNum];
 
                 $postContent = $this->getPost("note");
-                preg_match("#$postContent#",$data, $contentRet);
+                preg_match("#$postContent#is",$data, $contentRet);
                 $contentNum = $this->getPost("note_num");
-                $content = $contentRet[$contentNum];
+                //$content = $contentRet[$contentNum];
                 $r = array(
-                    "r" => $title,
-                    "content"=> $content
+                    //"r" => $title,
+                    "content"=> $contentRet[1],
+                    "d" => $data,
+                    "u"=>$postContent
                 );
                 echo json_encode($r);
             }

@@ -21,7 +21,9 @@ try{
         if(empty($value['title']))continue;
         $url = $value["url"];
         $data = file_get_contents($url);
-        $data = iconv('gb2312','UTF-8//IGNORE',$data);
+        if($value['code']!= "UTF-8"){
+            $data = iconv($value['code'],'UTF-8//IGNORE',$data);
+        }
         $contentRule = json_decode($value["content_url"],true);
         $rule = $contentRule['content'];
         preg_match("#$rule#is", $data, $contentRet);
