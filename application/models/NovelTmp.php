@@ -11,10 +11,11 @@ class NovelTmpModel extends AbstractModel {
     protected $_primary = "id";
 
     public static $_novel_tmp_status = array(
-      self::NOVEL_TMP_STATUS_FAILTURE => "失败",
-      self::NOVEL_TMP_STATUS_INIT => "初始化",
-      self::NOVEL_TMP_STATUS_READY => "就绪",
-      self::NOVEL_TMP_STATUS_FINISH => "完成"
+        self::NOVEL_TMP_STATUS_INIT => "初始化",
+        self::NOVEL_TMP_STATUS_READY => "就绪",
+        self::NOVEL_TMP_STATUS_FINISH => "完成",
+        self::NOVEL_TMP_STATUS_FAILTURE => "失败",
+        self::NOVEL_TMP_STATUS_DEL => "删除",
     );
 
     /**

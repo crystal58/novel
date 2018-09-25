@@ -45,6 +45,21 @@
           </div>
         </div>
         <div class="form-group">
+            <div class="label">
+                <label>小说状态：</label>
+            </div>
+            <div class="field">
+                <div class="field">
+                    <select name="novel_status" id="novel_status">
+                        <option value="<?=NovelModel::NOVEL_STATUS_OK?>">正常</option>
+                        <option value="<?=NovelModel::NOVEL_STATUS_LIMIT?>">冻结</option>
+                        <option value="<?=NovelModel::NOVEL_STATUS_DEL?>">删除</option>
+                    </select>
+                </div>
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
           <div class="label">
               <label>小说作者：</label>
           </div>
@@ -126,10 +141,10 @@
                 <td><?=date("Y-m-d H:i:s",$value['update_time'])?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-novel_class="<?=$value['novel_class_id']?>" data-author_id="<?=$value['author_id'].'_'.$value['author_name']?>" data-novel_id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-description="<?=$value['content']?>" data-record_status="<?=$value['record_status']?>">编辑</a>
-                        <a href="/novel/editStatus?id=<?=$value['id']?>&type=del" data-name="<?=$value['name']?>" class="button del_button"> 删除</a>
-                        <a href="/novel/editStatus?id=<?=$value['id']?>&type=limit" data-name="<?=$value['name']?>" class="button limit_button"> 冻结</a>
-                        <a href="/novel/subject?id=<?=$value['id']?>" class="button"> 目录</a>
+                        <a class="button edit_button" data-status="<?=$value['status']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-novel_class="<?=$value['novel_class_id']?>" data-author_id="<?=$value['author_id'].'_'.$value['author_name']?>" data-novel_id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-description="<?=$value['content']?>" data-record_status="<?=$value['record_status']?>">编辑</a>
+                        <a href="/data/getsubject?id=<?=$value['id']?>" class="button"> 采集规则</a>
+                        <a href="/novel/subject?id=<?=$value['id']?>" class="button"> 临时目录</a>
+                        <a href="/novel/realsubject?id=<?=$value['id']?>" class="button"> 真实目录</a>
                     </div>
                 </td>
             </tr>
@@ -149,7 +164,8 @@
             $("#author").val($(this).data("author_id"));
             $("#novel_class").val($(this).data("novel_class"));
             $("#record_status").val($(this).data("record_status"));
-            $("#novel_pic").attr("src",$(this).data("pic"))
+            $("#novel_pic").attr("src",$(this).data("pic"));
+            $("#novel_status").val($(this).data("status"));
             $("#edit_window").show();
 
         }
@@ -158,6 +174,7 @@
         function () {
             $("#novel_id").val("");
             $('form')[0].reset();
+            $("#novel_pic").attr("src","");
             $("#edit_window").show();
         }
     );

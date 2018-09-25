@@ -58,6 +58,7 @@ class NovelController extends AbstractController{
                     "novel_class_name" => NovelModel::$_novel_class_type[$novelClassId],
                     "novel_id" => $this->getPost("novel_id"),
                     "record_status" => $this->getPost("record_status"),
+                    "status" => $this->getPost("novel_status")
                 );
                 $imgInfo = $_FILES['img'];
                 if($_FILES['img']['name']){
@@ -116,7 +117,8 @@ class NovelController extends AbstractController{
             $result = $novelModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,true);
             $this->_view->list = $result['list'];
             $ph = new \YC\Page($result['cnt'],$page,self::PAGESIZE);
-           // echo json_encode(array($result['cnt'],$page,self::PAGESIZE));
+            //echo json_encode(array($result,$page,self::PAGESIZE));
+            //exit;
             $this->_view->pageHtml = $ph->getPageHtml();
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
@@ -134,9 +136,81 @@ class NovelController extends AbstractController{
                         "status" => NovelTmpModel::NOVEL_TMP_STATUS_INIT
                     )
                 );
+                $tmpId = $this->get("tmp_id");
+                if($tmpId > 0){
+                    $where['AND']['id'] = $tmpId;
+                }
                 $result = $novelModel->update(array("status" => NovelTmpModel::NOVEL_TMP_STATUS_READY),$where);
             }
             $this->redirect("/novel/subject?id=".$novelId);
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+    public function editTempAction(){
+        try{
+            $id = $this->get("id");
+            if($id > 0){
+                $params = array(
+                    "title" => $this->get("title"),
+                    "url" => $this->get("url"),
+                    "status" => $this->get("status"),
+                    "content_url" => json_encode(array("content" => $this->get("rule"),"num" => $this->get("num"))),
+                    "order" => $this->get("order"),
+                    "code" => $this->get("code"),
+                );
+                $novelModel = new NovelTmpModel();
+                $where['id'] = $id;
+                $result = $novelModel->update($params,$where);
+            }
+            $this->redirect("/novel/subject?id=".$this->get("novel_id"));
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+    /**
+     * 真实目录管理
+     */
+    public function realsubjectAction(){
+        try{
+            $id = $this->get("id");
+            if($id <= 0){
+                throw new Exception("参数错误（id={$id}）",400);
+            }
+            $page = (int)$this->get("page",1);
+            $page = $page>0 ? $page :1;
+            $offset = ($page-1) * self::PAGESIZE;
+
+            $novelChapterModel = new NovelChapterModel();
+            $result = $novelChapterModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,true);
+            $this->_view->list = $result['list'];
+            $ph = new \YC\Page($result['cnt'],$page,self::PAGESIZE);
+            $this->_view->pageHtml = $ph->getPageHtml();
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+
+    public function editChapterAction(){
+        try{
+            $id = $this->get("id");
+            if($id <= 0){
+                throw new Exception("参数错误（id={$id}）",400);
+            }
+            $params = array(
+                "title" => $this->get("title"),
+                "chapter_order" => $this->get("order"),
+                "status" => $this->get("status"),
+
+            );
+            $content = $this->get("content");
+            if($content){
+                $params['content'] = $content;
+            }
+
+            $novelChapterModel = new NovelChapterModel();
+            $result = $novelChapterModel->update($params,array("id" => $id));
+            $this->redirect("/novel/realsubject?id=".$this->get("novel_id"));
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }

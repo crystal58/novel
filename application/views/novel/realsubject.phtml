@@ -27,25 +27,6 @@
             </div>
             <div class="form-group" >
                 <div class="label">
-                    <label>章节采集url：</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input w50" value="" id="url" name="url" data-validate="required:请输入url" />
-                    <div class="tips"></div>
-                </div>
-            </div>
-            <div class="form-group" >
-                <div class="label">
-                    <label>采集正则：</label>
-                </div>
-                <div class="field">
-                    <input type="text" class="input w50" value="" id="rule" name="rule" data-validate="required:请输入正则" />
-                    <input type="text" value="" id="num" name="num">
-                    <div class="tips"></div>
-                </div>
-            </div>
-            <div class="form-group" >
-                <div class="label">
                     <label>章节顺序：</label>
                 </div>
                 <div class="field">
@@ -53,28 +34,24 @@
                     <div class="tips"></div>
                 </div>
             </div>
-            <div class="form-group" >
-                <div class="label">
-                    <label>编码：</label>
-                </div>
-                <div class="field">
-                    <select name="code" id="code">
-                        <option value="UTF-8">UTF-8</option>
-                        <option value="GBK">GBK</option>
-                        <option value="gb2312">gb2312</option>
-                    </select>
-                </div>
-            </div>
+
             <div class="form-group" >
                 <div class="label">
                     <label>章节状态：</label>
                 </div>
                 <div class="field">
                     <select name="status" id="status">
-                        <?php foreach (NovelTmpModel::$_novel_tmp_status as $key=>$value){?>
-                        <option value="<?=$key?>"><?=$value?></option>
-                        <?php }?>
+                        <option value="1">正常</option>
+                        <option value="-1">冻结</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group" >
+                <div class="label">
+                    <label>章节内容：</label>
+                </div>
+                <div class="field">
+                    <textarea name="content" style="width: 500px;height: 200px" ></textarea>
                 </div>
             </div>
             <input type="hidden" name="novel_id" id="novel_id" value="">
@@ -90,26 +67,20 @@
         <tr>
             <th>ID</th>
             <th>目录名称</th>
-            <th>目录url</th>
             <th>状态</th>
             <th>顺序</th>
-            <th>编码</th>
             <th>操作</th>
         </tr>
         <?php foreach($list as $key=>$value){
-                $ruleInfo = json_decode($value['content_url'],true);
             ?>
             <tr>
                 <td><?=$key+1?></td>
                 <td><?=$value['title']?></td>
-                <td><?=$value['url']?></td>
-                <td><?=isset(NovelTmpModel::$_novel_tmp_status[$value['status']])?NovelTmpModel::$_novel_tmp_status[$value['status']]:""?></td>
-                <td><?=$value['order']?></td>
-                <td><?=$value['code']?></td>
+                <td><?=$value['status']==1?"正常":"冻结"?></td>
+                <td><?=$value['chapter_order']?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-novel_id="<?=$value['novel_id']?>" data-status="<?=$value['status']?>" data-num="<?=$ruleInfo['num']?>" data-rule="<?=$ruleInfo['content']?>" data-id="<?=$value['id']?>"  data-title="<?=$value['title']?>" data-url="<?=$value['url']?>" data-order="<?=$value['order']?>" data-code="<?=$value['code']?>">编辑</a>
-                        <a class="button" href="/novel/subjectStatus?id=<?=$value['novel_id']?>&tmp_id=<?=$value['id']?>">就绪</a>
+                        <a class="button edit_button" data-novel_id="<?=$value['novel_id']?>" data-status="<?=$value['status']?>"  data-id="<?=$value['id']?>"  data-title="<?=$value['title']?>"  data-order="<?=$value['chapter_order']?>">编辑</a>
                     </div>
                 </td>
             </tr>
@@ -130,12 +101,8 @@
             var id = $(this).data("id");
             $("#id").val(id);
             $("#title").val($(this).data("title"));
-            $("#url").val($(this).data("url"));
-            $("#rule").val($(this).data("rule"));
-            $("#num").val($(this).data("num"));
             $("#status").val($(this).data("status"));
             $("#order").val($(this).data("order"));
-            $("#code").val($(this).data("code"));
             $("#novel_id").val($(this).data("novel_id"));
             $("#edit_window").show();
 
@@ -143,8 +110,8 @@
     );
     $("#add_button").click(
         function () {
-          //  $("#novel_id").val("");
-
+            $("#id").val("");
+            $('form')[0].reset();
             $("#edit_window").show();
         }
     );

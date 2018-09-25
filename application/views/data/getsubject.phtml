@@ -44,7 +44,7 @@
                     <select name="novel_id">
                         <option value=""></option>
                         <?php foreach ($this->novel_list['list'] as $value){ ?>
-                            <option value="<?=$value['id']?>"><?=$value['name']?></option>
+                            <option value="<?=$value['id']?>" <?=(isset($_GET['id']) && $value['id']==$_GET['id']) ? "selected" : ""?>><?=$value['name']?></option>
                         <?php }?>
                     </select>
                 </div>
@@ -83,6 +83,8 @@
         </div>
       </div>
     </form>
+      <textarea style="width: 500px;height: 200px;margin-left: 20px"></textarea>
   </div>
 </div>
+
 </body></html>
