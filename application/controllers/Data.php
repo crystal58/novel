@@ -122,6 +122,8 @@ class DataController extends AbstractController{
                 if(!empty($subjectData)){
                     $ret = $novelTmpModel->batchInsert($subjectData);
                 }
+
+                echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a>";
              }
         }catch(Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);

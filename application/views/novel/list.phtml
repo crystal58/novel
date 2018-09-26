@@ -126,8 +126,8 @@
             <th>作者名称</th>
             <th>小说类型</th>
             <th>状态</th>
+            <th>录入状态</th>
             <th>创建时间</th>
-            <th>更新时间</th>
             <th>操作</th>
         </tr>
         <?php foreach($novel_list as $value){ ?>
@@ -137,8 +137,9 @@
                 <td><?=$value['author_name']?></td>
                 <td><?=isset(NovelModel::$_novel_class_type[$value['novel_class_id']])?NovelModel::$_novel_class_type[$value['novel_class_id']]:""?></td>
                 <td><?=$value['status'] == NovelModel::NOVEL_STATUS_OK ? "正常" : ($value['status'] == NovelModel::NOVEL_STATUS_DEL ? "删除": "冻结")?></td>
+                <td><?=NovelModel::$_novel_flag_txt[$value['record_status']]?></td>
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
-                <td><?=date("Y-m-d H:i:s",$value['update_time'])?></td>
+
                 <td>
                     <div class="button-group">
                         <a class="button edit_button" data-status="<?=$value['status']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-novel_class="<?=$value['novel_class_id']?>" data-author_id="<?=$value['author_id'].'_'.$value['author_name']?>" data-novel_id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-description="<?=$value['content']?>" data-record_status="<?=$value['record_status']?>">编辑</a>
@@ -150,7 +151,9 @@
             </tr>
         <?php }?>
         <tr>
-            <td colspan="8"><div class="pagelist"> <a href="">上一页</a> <span class="current">1</span><a href="">2</a><a href="">3</a><a href="">下一页</a><a href="">尾页</a> </div></td>
+            <td colspan="8">
+                <?=$this->pageHtml?>
+            </td>
         </tr>
     </table>
 </div>
