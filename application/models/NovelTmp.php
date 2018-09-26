@@ -27,9 +27,7 @@ class NovelTmpModel extends AbstractModel {
         }
         $where = array();
         foreach($params as $key=>$value){
-            $where['AND'] = array(
-                $key => $value
-            );
+            $where['AND'][$key] = $value;
         }
 
         $result = array();
@@ -48,10 +46,9 @@ class NovelTmpModel extends AbstractModel {
         if(empty($params) && empty($pageSize)){
             return array();
         }
+        $where = array();
         foreach($params as $key=>$value){
-            $where['AND'] = array(
-                $key => $value
-            );
+            $where['AND'][$key] = $value;
         }
 
         $count = $this->count($where);
