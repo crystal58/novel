@@ -114,7 +114,8 @@ class DataController extends AbstractController{
                         "url" => $subjectUrl,
                         "create_time" => time(),
                         "content_url" => json_encode(array("content"=>$content,"num"=>$this->getPost("content_num"))),
-                        "order" => $count
+                        "order" => $count,
+                        "code" => $code
                     );
                     $count++;
                 }
