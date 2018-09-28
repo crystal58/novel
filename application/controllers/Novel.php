@@ -182,7 +182,7 @@ class NovelController extends AbstractController{
             $offset = ($page-1) * self::PAGESIZE;
 
             $novelChapterModel = new NovelChapterModel();
-            $result = $novelChapterModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,true);
+            $result = $novelChapterModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,array("chapter_order"=>"ASC"),true);
             $this->_view->list = $result['list'];
             $ph = new \YC\Page($result['cnt'],$page,self::PAGESIZE);
             $this->_view->pageHtml = $ph->getPageHtml();
@@ -194,22 +194,26 @@ class NovelController extends AbstractController{
     public function editChapterAction(){
         try{
             $id = $this->get("id");
-            if($id <= 0){
-                throw new Exception("参数错误（id={$id}）",400);
-            }
+            $novelId = $this->get("novel_id");
+//            if($id <= 0){
+//                throw new Exception("参数错误（id={$id}）",400);
+//            }
             $params = array(
                 "title" => $this->get("title"),
                 "chapter_order" => $this->get("order"),
                 "status" => $this->get("status"),
-
+                "novel_id" => $novelId
             );
             $content = $this->get("content");
             if($content){
                 $params['content'] = $content;
             }
 
+            if($id >0){
+                $params['id'] = $id;
+            }
             $novelChapterModel = new NovelChapterModel();
-            $result = $novelChapterModel->update($params,array("id" => $id));
+            $result = $novelChapterModel->replaceNovelChapter($params);
             $this->redirect("/novel/realsubject?id=".$this->get("novel_id"));
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);

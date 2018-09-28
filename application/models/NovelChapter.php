@@ -7,14 +7,15 @@ class NovelChapterModel extends AbstractModel {
     protected $_primary = "id";
 
 
-    public function replaceNovel($data){
-        if(empty($data['name'])){
+    public function replaceNovelChapter($data){
+        if(empty($data['title'])){
             return false;
         }
-        $novelId = $data['novel_id'];
-        unset($data['novel_id']);
-        if($novelId > 0){
-            return $this->update($data,array("id"=>$novelId));
+        $id = isset($data['id']) ? $data['id'] : 0;
+
+        if($id > 0){
+            unset($data['id']);
+            return $this->update($data,array("id"=>$id));
         }
         return $this->insert($data);
     }
@@ -22,7 +23,7 @@ class NovelChapterModel extends AbstractModel {
     /**
      * isCount   是否返回count
      */
-    public function getList($params,$offset = 0,$pageSize = null,$isCount = false) {
+    public function getList($params,$offset = 0,$pageSize = null,$order=null,$isCount = false) {
         if(empty($params) && empty($pageSize)){
             return array();
         }
@@ -40,6 +41,9 @@ class NovelChapterModel extends AbstractModel {
             $where['LIMIT'] = array($offset,$pageSize);
         }
 
+        if($order){
+            $where['ORDER'] = $order;
+        }
         $result['list'] = $this->fetchAll($where,array("id","title","novel_id","keywords","chapter_order","status"));
         return $result;
     }

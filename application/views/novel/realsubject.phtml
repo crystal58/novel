@@ -14,8 +14,9 @@
 <body>
 
 <div class="panel admin-panel">
+    <div class="panel-head"><input type="button" value="添加章节" id="add_button"></div>
     <div class="body-content" style="display:none "  id="edit_window">
-        <form method="post" class="form-x" action="/novel/editTemp" id="edit_window_form" enctype="multipart/form-data">
+        <form method="post" class="form-x" action="/novel/editChapter" id="edit_window_form" enctype="multipart/form-data">
             <div class="form-group" >
                 <div class="label">
                     <label>章节title：</label>
@@ -54,15 +55,12 @@
                     <textarea name="content" style="width: 500px;height: 200px" ></textarea>
                 </div>
             </div>
-            <input type="hidden" name="novel_id" id="novel_id" value="">
+            <input type="hidden" name="novel_id" id="novel_id" value="<?=$_GET['id']?>">
             <input type="hidden" name="id" value="" id="id">
             <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
         </form>
     </div>
     <div class="panel-head"><strong class="icon-reorder"> 小说目录管理</strong></div>
-    <div class="button-group">
-        <a href="/novel/subjectStatus?id=<?=$_GET['id']?>" class="button"> 就绪</a>
-    </div>
     <table class="table table-hover text-center">
         <tr>
             <th>ID</th>
