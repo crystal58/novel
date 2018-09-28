@@ -202,7 +202,8 @@ class NovelController extends AbstractController{
                 "title" => $this->get("title"),
                 "chapter_order" => $this->get("order"),
                 "status" => $this->get("status"),
-                "novel_id" => $novelId
+                "novel_id" => $novelId,
+                "is_part" => $this->get("is_part")
             );
             $content = $this->get("content");
             if($content){
@@ -212,6 +213,7 @@ class NovelController extends AbstractController{
             if($id >0){
                 $params['id'] = $id;
             }
+            //echo json_encode($params);exit;
             $novelChapterModel = new NovelChapterModel();
             $result = $novelChapterModel->replaceNovelChapter($params);
             $this->redirect("/novel/realsubject?id=".$this->get("novel_id"));
