@@ -161,7 +161,7 @@ class NovelController extends AbstractController{
                     "title" => $this->get("title"),
                     "url" => $this->get("url"),
                     "status" => $this->get("status"),
-                    "content_url" => json_encode(array("content" => $this->get("rule"),"num" => $this->get("num"))),
+                    //"content_url" => json_encode(array("content" => $this->get("rule"),"num" => $this->get("num"))),
                     "order" => $this->get("order"),
                     "code" => $this->get("code"),
                 );
