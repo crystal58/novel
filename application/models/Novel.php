@@ -56,6 +56,7 @@ class NovelModel extends AbstractModel {
             $where['LIMIT'] = array($offset,$pageSize);
         }
         $where['ORDER'] = array(
+            "order" => "ASC",
             "id"=>"DESC"
         );
         $result['list'] = $this->fetchAll($where);

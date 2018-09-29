@@ -51,7 +51,15 @@ class AuthorModel extends AbstractModel {
     }
 
     public function getAllAuthor(){
-        return $this->fetchAll(array("status"=>self::AUTHOR_STATUS));
+        $param = array(
+            "AND" => array(
+                "status"=>self::AUTHOR_STATUS
+            ),
+            "ORDER" => array(
+                "id" => "DESC"
+            )
+        );
+        return $this->fetchAll($param);
     }
 
 }

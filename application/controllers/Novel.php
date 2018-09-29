@@ -13,7 +13,12 @@ class NovelController extends AbstractController{
             $page = ((int)$this->get("page", 1)) > 0 ?: 1;
             $offset = ($page - 1) * self::PAGESIZE;
             $novelModel = new NovelModel();
-            $result = $novelModel->novelList(array(), $offset, self::PAGESIZE, true);
+            $params = array();
+            $authorId = $this->get("author_id");
+            if($authorId > 0){
+                $params['author_id'] = $authorId;
+            }
+            $result = $novelModel->novelList($params, $offset, self::PAGESIZE, true);
             $this->_view->novel_list = $result['list'];
 
             $ph = new \YC\Page($result['cnt'], $page, self::PAGESIZE);
@@ -58,7 +63,8 @@ class NovelController extends AbstractController{
                     "novel_class_name" => NovelModel::$_novel_class_type[$novelClassId],
                     "novel_id" => $this->getPost("novel_id"),
                     "record_status" => $this->getPost("record_status"),
-                    "status" => $this->getPost("novel_status")
+                    "status" => $this->getPost("novel_status"),
+                    "order" => $this->getPost("order"),
                 );
                 $imgInfo = $_FILES['img'];
                 if($_FILES['img']['name']){
