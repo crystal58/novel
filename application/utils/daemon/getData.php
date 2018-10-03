@@ -20,12 +20,13 @@ try{
     foreach ($list as $value){
         if(empty($value['title']))continue;
         $url = $value["url"];
-        $data = file_get_contents($url);
+        //$data = file_get_contents($url);
+        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
         if($value['code']!= "UTF-8"){
             $data = iconv($value['code'],'UTF-8//IGNORE',$data);
         }
         $contentRule = json_decode($value["content_url"],true);
-        $rule = $contentRule['content'];
+        $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
         preg_match("#$rule#is", $data, $contentRet);
         $content = $contentRet[$contentRule['num']];
         $novelChapter = new NovelChapterModel();
