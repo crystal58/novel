@@ -40,7 +40,7 @@ class WebController extends AbstractController{
             $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
             $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
 
-            $this->_view->wuxia =  $wuxia = $wuxia ? json_decode($wuxiaData['value'],true):array();
+            $this->_view->wuxia =  $wuxia = $wuxiaData ? json_decode($wuxiaData['value'],true):array();
             $this->_view->yanqing = $yanqing = $yanqingData ? json_decode($yanqingData['value'],true) : array();
             $wuxiaId = $yanqingId = array();
             foreach ($wuxia as $value){
