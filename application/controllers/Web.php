@@ -35,7 +35,18 @@ class WebController extends AbstractController{
     }
 
     public function recommendAction(){
+        try {
+            $keyValuesModel = new keyValuesModel();
+            $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
+            $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
+            //var_dump($wuxiaData);exit;
 
+            $this->_view->wuxia = json_decode($wuxiaData['value'],true);
+            $this->_view->yanqing = json_decode($yanqingData['value'],true);
+
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
     }
 
     public function novelrecomendpostAction(){

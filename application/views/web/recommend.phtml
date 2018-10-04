@@ -28,7 +28,13 @@
         </div>
       </div>
       <div id="wuxia">
-
+            <?php foreach ($this->wuxia as $value){?>
+            <div>
+                <span><?=$value['id']?>.</span>
+                <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
+                <span><?=$value['name']?></span>
+            </div>
+            <?php }?>
       </div>
 
       <div class="form-group">
@@ -43,7 +49,13 @@
           </div>
       </div>
       <div id="yanqing">
-
+          <?php foreach ($this->yanqing as $value){?>
+              <div>
+                  <span><?=$value['id']?>.</span>
+                  <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
+                  <span><?=$value['name']?></span>
+              </div>
+          <?php }?>
       </div>
   </div>
 </div>
