@@ -75,6 +75,6 @@ class NovelModel extends AbstractModel {
             )
 
         );
-        return $this->fetchAll($params);
+        return $this->fetchAll($params,array("id","pic","name"));
     }
 }
