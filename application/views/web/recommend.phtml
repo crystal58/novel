@@ -21,28 +21,75 @@
           <label>武侠小说ID：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" value="" name="xuxia_id" data-validate="required:请输入标题" />
+          <input type="text" class="input w50" value="" id="wuxia_id" />
           <div class="tips"></div>
-            <button class="button bg-main icon-check-square-o" id="wuxia_button" type="button"> 提交</button>
+            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wuxia_button" type="button"> 预览</button>
+            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wuxia_submit_button" type="button"> 提交</button>
         </div>
       </div>
       <div id="wuxia">
 
       </div>
+
+      <div class="form-group">
+          <div class="label">
+              <label>言情小说ID：</label>
+          </div>
+          <div class="field">
+              <input type="text" class="input w50" value="" id="yanqing_id" />
+              <div class="tips"></div>
+              <button class="button bg-main icon-check-square-o" data-type="yanqing" id="yanqing_button" type="button"> 预览</button>
+              <button class="button bg-main icon-check-square-o" data-type="yanqing" id="yanqing_submit_button" type="button"> 提交</button>
+          </div>
+      </div>
+      <div id="yanqing">
+
+      </div>
   </div>
 </div>
 <script>
-    $("#wuxia_button").click(function () {
+    $("#wuxia_button,#yanqing_button").click(function () {
+        var novel_type = $(this).data("type");
         $.ajax({
-            url: "/novel/getnovelbyIds?id=" +$("#wuxia_id"),
+            url: "/web/novelrecomend?id=" +$("#"+novel_type+"_id").val()+"&type="+novel_type,
             type: "get",
-            success: function(data, code) {
+            success: function(data) {
+                if(data.code == 200){
+                    var html = "";
+                    var ret = data.result;
+                    var img = "";
+                    for (var key in ret){
+                        html += "<div>"
+                            + "<span>"+ret[key].id+".</span>"
+                            + "<span><img src='"+ret[key].pic+"' width='30' height='30'></span>"
+                            + "<span><a href='<?=$this->web_url?>/xiaoshuo/chapter_"+ret[key].id+"_1.html' target='_blank'> "+ret[key].name+"</a><span>"
+                            + "</div>";
+                    }
+                    $("#"+novel_type).html(html);
+
+                }else{
+                    alert(data.msg);
+                }
 
             }
         });
-
     });
 
+    $("#wuxia_submit_button,#yanqing_submit_button").click(function () {
+        var novel_type = $(this).data("type");
+        $.ajax({
+            url: "/web/novelrecomendpost?id=" +$("#"+novel_type+"_id").val()+"&type="+novel_type,
+            type: "get",
+            success: function(data) {
+                if(data.code == 200){
+                    alert("success");
+                }else{
+                    alert(data.msg);
+                }
+
+            }
+        });
+    });
 
 </script>
 </body></html>

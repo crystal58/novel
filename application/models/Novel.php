@@ -62,4 +62,19 @@ class NovelModel extends AbstractModel {
         $result['list'] = $this->fetchAll($where);
         return $result;
     }
+
+    public function getNovelbyIds($ids){
+        if(empty($ids)) return false;
+        if(!is_array($ids) && $ids > 0){
+            $ids = array($ids);
+        }
+        $params = array(
+            "AND" => array(
+                "id" => $ids,
+                "status" => NovelModel::NOVEL_STATUS_OK
+            )
+
+        );
+        return $this->fetchAll($params);
+    }
 }

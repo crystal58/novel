@@ -33,6 +33,8 @@ class AbstractController extends Yaf_Controller_Abstract {
         }
         $this->_operatorId = $data['i'];
         $this->_operatorName = $data['n'];
+        $config = Yaf_Registry::get("dbconfig");
+        $this->_view->web_url = $config['web_url'];
         
     }
     protected function processException($class, $method, $e) {
@@ -46,6 +48,15 @@ class AbstractController extends Yaf_Controller_Abstract {
         $this->getView()->display($this->getView()->getScriptPath() . "/error/error.phtml");
 
 //        return $result;
+    }
+
+    protected function renderJsonEx($result, $code, $msg = '') {
+        $this->renderJson(array("code" => $code, "msg" => $msg?:$result, "result" => $result));
+    }
+    protected function renderJson(array $parameters = null) {
+        header("Content-Type: application/json; charset=utf8");
+        echo json_encode($parameters, JSON_UNESCAPED_UNICODE);
+        exit;
     }
     
 }
