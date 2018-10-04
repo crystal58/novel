@@ -49,8 +49,8 @@ class WebController extends AbstractController{
             foreach ($yanqing as $value){
                 $yanqingId[] = $value['id'];
             }
-            $this->_view->wuxia_id = $wuxiaId;
-            $this->_view->yanqing_id = $yanqingId;
+            $this->_view->wuxia_id = implode(",",$wuxiaId);
+            $this->_view->yanqing_id = implode(",",$yanqingId);
 
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
