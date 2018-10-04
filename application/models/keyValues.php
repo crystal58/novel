@@ -14,6 +14,7 @@ class keyValuesModel extends AbstractModel {
         $keys = $data['keys'];
         $ret = $this->fetchRow(array("keys"=>$keys));
         if($ret){
+            unset($data['keys']);
             $result = $this->update($data,array("keys" => $keys));
         }else{
             $result = $this->insert($data);
