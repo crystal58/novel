@@ -32,6 +32,7 @@
             <div>
                 <span><?=$value['id']?>.</span>
                 <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
+                <span><?=$value['author_name']?> _ </span>
                 <span><?=$value['name']?></span>
             </div>
             <?php }?>
@@ -53,6 +54,7 @@
               <div>
                   <span><?=$value['id']?>.</span>
                   <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
+                  <span><?=$value['author_name']?> _ </span>
                   <span><?=$value['name']?></span>
               </div>
           <?php }?>
@@ -74,6 +76,7 @@
                         html += "<div>"
                             + "<span>"+ret[key].id+".</span>"
                             + "<span><img src='"+ret[key].pic+"' width='30' height='30'></span>"
+                            + "<span>"+ret[key].author_name+" _ </span>"
                             + "<span><a href='<?=$this->web_url?>/xiaoshuo/chapter_"+ret[key].id+"_1.html' target='_blank'> "+ret[key].name+"</a><span>"
                             + "</div>";
                     }

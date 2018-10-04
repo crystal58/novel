@@ -65,10 +65,15 @@ class WebController extends AbstractController{
             if (!empty($novelIdStr)) {
                 $ids = explode(",", $novelIdStr);
                 $novelModel = new NovelModel();
-                $novelList = $novelModel->getNovelbyIds($ids);
+                $novelData = $novelModel->getNovelbyIds($ids);
 
-                foreach ($novelList as &$value){
-                    $value['pic'] = \YC\Common::getUrl($value['pic']);
+                foreach ($novelData as $value){
+                    $novelList[] = array(
+                        "name" => $value['name'],
+                        "author_name" => $value['author_name'],
+                        "pic" =>  \YC\Common::getUrl($value['pic']),
+                        "id" => $value['id']
+                    );
                 }
             }
             $keyValuesModel = new keyValuesModel();
