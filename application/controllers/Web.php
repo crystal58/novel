@@ -39,10 +39,18 @@ class WebController extends AbstractController{
             $keyValuesModel = new keyValuesModel();
             $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
             $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
-            //var_dump($wuxiaData);exit;
 
-            $this->_view->wuxia = json_decode($wuxiaData['value'],true);
-            $this->_view->yanqing = json_decode($yanqingData['value'],true);
+            $this->_view->wuxia =  $wuxia = json_decode($wuxiaData['value'],true);
+            $this->_view->yanqing = $yanqing = json_decode($yanqingData['value'],true);
+            $wuxiaId = $yanqingId = array();
+            foreach ($wuxia as $value){
+                $wuxiaId[] = $value['id'];
+            }
+            foreach ($yanqing as $value){
+                $yanqingId[] = $value['id'];
+            }
+            $this->_view->wuxia_id = $wuxiaId;
+            $this->_view->yanqing_id = $yanqingId;
 
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
