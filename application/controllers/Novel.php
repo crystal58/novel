@@ -188,7 +188,7 @@ class NovelController extends AbstractController{
             $offset = ($page-1) * self::PAGESIZE;
 
             $novelChapterModel = new NovelChapterModel();
-            $result = $novelChapterModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,array("chapter_order"=>"ASC"),true);
+            $result = $novelChapterModel->getList(array("novel_id" => (int)$id),$offset,self::PAGESIZE,array("chapter_order"=>"ASC","id" => "ASC"),true);
             $this->_view->list = $result['list'];
             $ph = new \YC\Page($result['cnt'],$page,self::PAGESIZE);
             $this->_view->pageHtml = $ph->getPageHtml();
