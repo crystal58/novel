@@ -18,6 +18,54 @@
     <form method="post" class="form-x" action="/data/postsubject">
         <div class="form-group">
             <div class="label">
+                <label>采集作者URL：</label>
+            </div>
+            <div class="field">
+                <input type="text" class="input w50" name="author_url" value=""  />
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>采集作者正则：</label>
+            </div>
+            <div class="field">
+                <input type="text" class="input w50" name="author_rule" value=""  />
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>作者：</label>
+            </div>
+            <div class="field">
+                <select name="author" id="author">
+                    <option value=""></option>
+                    <?php foreach ($this->author_list as $value){ ?>
+                        <option value="<?=$value['id']."_".$value['author_name']?>"><?=$value['author_name']?></option>
+                    <?php }?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label" style="width: 80px;">
+                <label>小说类型：</label>
+            </div>
+            <div class="field">
+                <div class="field">
+                    <select name="novel_class" id="novel_class">
+                        <option value=""></option>
+                        <?php foreach (NovelModel::$_novel_class_type as $key=>$value){ ?>
+                            <option value="<?=$key."_".$value?>"><?=$value?></option>
+                        <?php }?>
+                    </select>
+                </div>
+                <div class="tips"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="label">
                 <label>采集URL：</label>
             </div>
             <div class="field">
