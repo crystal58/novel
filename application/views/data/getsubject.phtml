@@ -16,6 +16,19 @@
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 采集目录</strong></div>
   <div class="body-content">
     <form method="post" class="form-x" action="/data/postsubject">
+
+        <div class="form-group">
+            <div class="label">
+                <label>抓取类型：</label>
+            </div>
+            <div class="field">
+                <select id="getID" class="input w50">
+                    <option value="1">按作者抓取</option>
+                    <option value="2">按单篇抓取</option>
+                </select>
+            </div>
+        </div>
+        <div id="get_author">
         <div class="form-group">
             <div class="label">
                 <label>采集作者URL：</label>
@@ -27,10 +40,10 @@
         </div>
         <div class="form-group">
             <div class="label">
-                <label>采集作者正则：</label>
+                <label>作者作品正则：</label>
             </div>
             <div class="field">
-                <input type="text" class="input w50" name="author_rule" value=""  />
+                <input type="text" style="width: 90%" class="input w50" name="author_rule" value=""  />
                 <div class="tips"></div>
             </div>
         </div>
@@ -39,7 +52,7 @@
                 <label>作者：</label>
             </div>
             <div class="field">
-                <select name="author" id="author">
+                <select name="author" id="author" class="input w50">
                     <option value=""></option>
                     <?php foreach ($this->author_list as $value){ ?>
                         <option value="<?=$value['id']."_".$value['author_name']?>"><?=$value['author_name']?></option>
@@ -48,12 +61,12 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="label" style="width: 80px;">
+            <div class="label">
                 <label>小说类型：</label>
             </div>
             <div class="field">
                 <div class="field">
-                    <select name="novel_class" id="novel_class">
+                    <select name="novel_class" id="novel_class" class="input w50">
                         <option value=""></option>
                         <?php foreach (NovelModel::$_novel_class_type as $key=>$value){ ?>
                             <option value="<?=$key."_".$value?>"><?=$value?></option>
@@ -64,6 +77,8 @@
             </div>
         </div>
 
+        </div>
+        <div id="get_one">
         <div class="form-group">
             <div class="label">
                 <label>采集URL：</label>
@@ -71,6 +86,23 @@
             <div class="field">
                 <input type="text" class="input w50" name="url" value=""  />
                 <div class="tips"></div>
+            </div>
+        </div>
+            <div class="form-group">
+                <div class="label">
+                    <label>小说名称：</label>
+                </div>
+                <div class="field">
+                    <div class="field">
+                        <select name="novel_id" class="input w50">
+                            <option value=""></option>
+                            <?php foreach ($this->novel_list['list'] as $value){ ?>
+                                <option value="<?=$value['id']?>" <?=(isset($_GET['id']) && $value['id']==$_GET['id']) ? "selected" : ""?>><?=$value['name']?></option>
+                            <?php }?>
+                        </select>
+                    </div>
+                    <div class="tips"></div>
+                </div>
             </div>
         </div>
       <div class="form-group">
@@ -83,29 +115,14 @@
         </div>
       </div>
 
-        <div class="form-group">
-            <div class="label">
-                <label>小说名称：</label>
-            </div>
-            <div class="field">
-                <div class="field">
-                    <select name="novel_id">
-                        <option value=""></option>
-                        <?php foreach ($this->novel_list['list'] as $value){ ?>
-                            <option value="<?=$value['id']?>" <?=(isset($_GET['id']) && $value['id']==$_GET['id']) ? "selected" : ""?>><?=$value['name']?></option>
-                        <?php }?>
-                    </select>
-                </div>
-                <div class="tips"></div>
-            </div>
-        </div>
+
 
         <div class="form-group">
             <div class="label">
                 <label>正文正则：</label>
             </div>
             <div class="field">
-                <input type="text" class="input w50" value="" name="content" data-validate="required:请输入正文正则" /><input type="text" name="content_num" value="1">
+                <input type="text" style="width: 90%"  class="input w50" value="" name="content" data-validate="required:请输入正文正则" /><input type="text" name="content_num" value="1">
                 <div class="tips"></div>
             </div>
         </div>
@@ -114,7 +131,7 @@
                 <label>采集网站编码：</label>
             </div>
             <div class="field">
-                <select name="code">
+                <select name="code" class="input w50">
                     <option value="gb2312">gb2312</option>
                     <option value="UTF-8">UTF-8</option>
                     <option value="GBK">GBK</option>
@@ -135,5 +152,25 @@
       <textarea style="width: 500px;height: 200px;margin-left: 20px"></textarea>
   </div>
 </div>
+<script>
+    $("#getID").change(function () {
+        if($(this).val() == 1){
+            $("#get_author").show();
+            $("#get_one").hide();
+        }else{
+            $("#get_author").hide();
+            $("#get_one").show();
+        }
+    });
+    <?php if(isset($_GET['id']) && $_GET['id'] > 0){?>
+    $("#get_author").hide();
+    $("#get_one").show();
+    $("#getID").val("2");
+    <?php }else{?>
+    $("#get_author").show();
+    $("#get_one").hide();
+    $("#getID").val("1")
+    <?php }?>
+</script>
 
 </body></html>

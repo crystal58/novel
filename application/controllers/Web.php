@@ -68,14 +68,18 @@ class WebController extends AbstractController{
                 $novelData = $novelModel->getNovelbyIds($ids);
 
                 foreach ($novelData as $value){
-                    $novelList[] = array(
+                    $novelTmp[$value['id']] = array(
                         "name" => $value['name'],
                         "author_name" => $value['author_name'],
                         "pic" =>  \YC\Common::getUrl($value['pic']),
                         "id" => $value['id']
                     );
                 }
+                foreach ($ids as $value){
+                    $novelList[] = $novelTmp[$value];
+                }
             }
+
             $keyValuesModel = new keyValuesModel();
             $params = array(
                 "keys" => "recommend_".$type,
