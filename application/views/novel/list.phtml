@@ -153,7 +153,7 @@
             <th>创建时间</th>
             <th>操作</th>
         </tr>
-        <?php foreach($novel_list as $value){ ?>
+        <?php foreach($this->novel_list as $value){ ?>
             <tr>
                 <td><?=$value['id']?></td>
                 <td><?=$value['name']?></td>
@@ -165,11 +165,11 @@
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
 
                 <td>
-                    <div class="button-group">
+                    <div class="button-group" style="align-content: left">
                         <a class="button edit_button" data-order="<?=$value['order']?>" data-status="<?=$value['status']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-novel_class="<?=$value['novel_class_id']?>" data-author_id="<?=$value['author_id'].'_'.$value['author_name']?>" data-novel_id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-description="<?=$value['content']?>" data-record_status="<?=$value['record_status']?>">编辑</a>
-                        <? if($value['record_status'] != NovelModel::NOVEL_RECORDING_FINISH){?>
+                        <?php if($value['record_status'] != NovelModel::NOVEL_RECORDING_FINISH){?>
                         <a href="/data/getsubject?id=<?=$value['id']?>" class="button"> 采集规则</a>
-                        <? }?>
+                        <?php }?>
                         <a href="/novel/subject?id=<?=$value['id']?>" class="button"> 临时目录</a>
                         <a href="/novel/realsubject?id=<?=$value['id']?>" class="button"> 真实目录</a>
                     </div>
