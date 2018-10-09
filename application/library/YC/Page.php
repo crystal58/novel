@@ -42,11 +42,13 @@ class Page{
             $pageHtml .= "<a href='".$this->_url."&page=".($this->_curPage-1)."'>上一页</a>";
         }
         $num = $this->_totalPage > $this->_showPage ? $this->_showPage :$this->_totalPage;
+
         for($i = 1;$i<= $num ; $i++){
             if($i == $this->_curPage){
                 $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
                 continue;
             }
+
 
             if($this->_totalPage <= $num){
                 $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";

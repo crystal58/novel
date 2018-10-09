@@ -10,7 +10,8 @@ class NovelController extends AbstractController{
     public function listAction(){
 
         try {
-            $page = ((int)$this->get("page", 1)) > 0 ?: 1;
+
+            $page = ((int)$this->get("page", 1)) > 0 ?$this->get("page", 1) : 1;
             $offset = ($page - 1) * self::PAGESIZE;
             $novelModel = new NovelModel();
             $params = array();
