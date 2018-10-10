@@ -33,6 +33,8 @@ try{
         if(empty($content)){
             \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
         }
+        $content = preg_replace('/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i', '', $content);
+        $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
         $sqlData = array(
             "novel_id" => $value['novel_id'],
             "title" => $value['title'],
