@@ -8,7 +8,7 @@ class AuthorController extends AbstractController{
     public function listAction(){
 
         try {
-            $page = ((int)$this->get("page", 1)) > 0 ?: 1;
+            $page = ((int)$this->get("page", 1)) > 0 ? (int)$this->get("page", 1) : 1;
             $offset = ($page - 1) * self::PAGESIZE;
             $authorModel = new AuthorModel();
             $result = $authorModel->getList(array('status' => 1), $offset, self::PAGESIZE, true);
