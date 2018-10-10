@@ -5,9 +5,45 @@ class ArticleController extends AbstractController{
     const PAGESIZE = 50;
 
     public function articletypeAction(){
+        $articleTypeModel = new ArticlesTypeModel();
+        $classList = $articleTypeModel->getAllClass();
+        $this->_view->class_list = $classList;
+        $firstClass = array();
+        foreach($classList as $value){
+            if($value['parent_id'] == 0){
+                $firstClass[$value['id']] = $value['name'];
+            }
+        }
+        $this->_view->first_class = $firstClass;
 
     }
 
+    public function replaceAction(){
+        try {
+            $name = $this->getPost("class_name");
+            $parentId = $this->getPost("parent_class");
+            $content = $this->getPost("content");
+            $id = $this->getPost("class_id");
+
+            if(empty($name)){
+                throw new Exception("参数错误");
+            }
+
+            $data = array(
+                "id" => $id,
+                "name" => $name,
+                "parent_id" => $parentId,
+                "content" => $content
+            );
+            $articleTypeModel = new ArticlesTypeModel();
+            $articleTypeModel->replaceClass($data);
+
+            $this->redirect("/article/articletype");
+
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
     /**
      * 小说列表
      */
