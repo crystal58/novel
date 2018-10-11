@@ -17,18 +17,35 @@
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 首页推荐</strong></div>
   <div class="body-content">
       <div class="form-group">
+          <div class="label" style="width: 80px;">
+              <label>小说类型</label>
+          </div>
+          <div class="field">
+              <div class="field">
+              <select name="novel_class" id="novel_class" class="input w50" onchange="location.href='/web/recommend?type='+this.value">
+                  <?php
+                  $type = isset($_GET['type'])?$_GET['type']:1;
+                  foreach (NovelModel::$_novel_class_type as $key=>$value){ ?>
+                      <option value="<?=$key?>" <?=$type==$key?"selected":""?>><?=$value?></option>
+                  <?php }?>
+              </select>
+              </div>
+          </div>
+          <div class="label"></div>
+      </div><br>
+      <div class="form-group">
         <div class="label">
-          <label>武侠小说ID：</label>
+          <label>小说ID：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" value="<?=$this->wuxia_id?>" id="wuxia_id" />
+          <input type="text" class="input w50" value="<?=$this->xiaoshuo_id?>" id="xiaoshuo_id" />
           <div class="tips"></div>
-            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wuxia_button" type="button"> 预览</button>
-            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wuxia_submit_button" type="button"> 提交</button>
+            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="xiaoshuo_button" type="button"> 预览</button>
+            <button class="button bg-main icon-check-square-o" data-type="wuxia" id="xiaoshuo_submit_button" type="button"> 提交</button>
         </div>
       </div>
-      <div id="wuxia">
-            <?php foreach ($this->wuxia as $value){?>
+      <div id="xiaoshuo_list">
+            <?php foreach ($this->xiaoshuo_list as $value){?>
             <div>
                 <span><?=$value['id']?>.</span>
                 <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
@@ -37,35 +54,13 @@
             </div>
             <?php }?>
       </div>
-
-      <div class="form-group">
-          <div class="label">
-              <label>言情小说ID：</label>
-          </div>
-          <div class="field">
-              <input type="text" class="input w50" value="<?=$this->yanqing_id?>" id="yanqing_id" />
-              <div class="tips"></div>
-              <button class="button bg-main icon-check-square-o" data-type="yanqing" id="yanqing_button" type="button"> 预览</button>
-              <button class="button bg-main icon-check-square-o" data-type="yanqing" id="yanqing_submit_button" type="button"> 提交</button>
-          </div>
-      </div>
-      <div id="yanqing">
-          <?php foreach ($this->yanqing as $value){?>
-              <div>
-                  <span><?=$value['id']?>.</span>
-                  <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
-                  <span><?=$value['author_name']?> _ </span>
-                  <span><?=$value['name']?></span>
-              </div>
-          <?php }?>
-      </div>
   </div>
 </div>
 <script>
-    $("#wuxia_button,#yanqing_button").click(function () {
-        var novel_type = $(this).data("type");
+    $("#xiaoshuo_button").click(function () {
+        var novel_type = $("#novel_class").val();
         $.ajax({
-            url: "/web/novelrecomend?id=" +$("#"+novel_type+"_id").val()+"&type="+novel_type,
+            url: "/web/novelrecomend?id=" +$("#xiaoshuo_id").val()+"&type="+novel_type,
             type: "get",
             success: function(data) {
                 if(data.code == 200){
@@ -80,7 +75,7 @@
                             + "<span><a href='<?=$this->web_url?>/xiaoshuo/chapter_"+ret[key].id+"_1.html' target='_blank'> "+ret[key].name+"</a><span>"
                             + "</div>";
                     }
-                    $("#"+novel_type).html(html);
+                    $("#xiaoshuo_list").html(html);
 
                 }else{
                     alert(data.msg);
@@ -90,10 +85,10 @@
         });
     });
 
-    $("#wuxia_submit_button,#yanqing_submit_button").click(function () {
-        var novel_type = $(this).data("type");
+    $("#xiaoshuo_submit_button").click(function () {
+        var novel_type = $("#novel_class").val();
         $.ajax({
-            url: "/web/novelrecomendpost?id=" +$("#"+novel_type+"_id").val()+"&type="+novel_type,
+            url: "/web/novelrecomendpost?id=" +$("#xiaoshuo_id").val()+"&type="+novel_type,
             type: "get",
             success: function(data) {
                 if(data.code == 200){

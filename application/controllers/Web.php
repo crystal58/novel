@@ -8,6 +8,9 @@
 
 class WebController extends AbstractController{
 
+    /**
+     * 预览
+     */
     public function novelrecomendAction(){
         try {
             $novelIdStr = $this->get("id");
@@ -37,20 +40,22 @@ class WebController extends AbstractController{
     public function recommendAction(){
         try {
             $keyValuesModel = new keyValuesModel();
-            $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
-            $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
+            $type = $this->get("type")?:1;
 
-            $this->_view->wuxia =  $wuxia = $wuxiaData ? json_decode($wuxiaData['value'],true):array();
-            $this->_view->yanqing = $yanqing = $yanqingData ? json_decode($yanqingData['value'],true) : array();
-            $wuxiaId = $yanqingId = array();
-            foreach ($wuxia as $value){
-                $wuxiaId[] = $value['id'];
+            $xiaoshuoData = $keyValuesModel->fetchRow(array("keys"=>"recommend_".NovelModel::$_novel_class_pinxie[$type]));
+            $this->_view->xiaoshuo_list = $xiaoshuo = $xiaoshuoData ? json_decode($xiaoshuoData['value'],true) :array();
+
+//            $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
+//            $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
+//
+//            $this->_view->wuxia =  $wuxia = $wuxiaData ? json_decode($wuxiaData['value'],true):array();
+//            $this->_view->yanqing = $yanqing = $yanqingData ? json_decode($yanqingData['value'],true) : array();
+            $xiaoshuoId = array();
+            foreach ($xiaoshuo as $value){
+                $xiaoshuoId[] = $value['id'];
             }
-            foreach ($yanqing as $value){
-                $yanqingId[] = $value['id'];
-            }
-            $this->_view->wuxia_id = implode(",",$wuxiaId);
-            $this->_view->yanqing_id = implode(",",$yanqingId);
+
+            $this->_view->xiaoshuo_id = implode(",",$xiaoshuoId);
 
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
@@ -61,6 +66,9 @@ class WebController extends AbstractController{
         try {
             $novelIdStr = $this->get("id");
             $type = $this->get("type");
+            if(!isset(NovelModel::$_novel_class_pinxie[$type])){
+                throw new Exception("参数错误");
+            }
             $novelList = array();
             if (!empty($novelIdStr)) {
                 $ids = explode(",", $novelIdStr);
@@ -76,13 +84,15 @@ class WebController extends AbstractController{
                     );
                 }
                 foreach ($ids as $value){
-                    $novelList[] = $novelTmp[$value];
+                    if(isset($novelTmp[$value])) {
+                        $novelList[] = $novelTmp[$value];
+                    }
                 }
             }
 
             $keyValuesModel = new keyValuesModel();
             $params = array(
-                "keys" => "recommend_".$type,
+                "keys" => "recommend_".NovelModel::$_novel_class_pinxie[$type],
                 "value" => json_encode($novelList)
             );
             $keyValuesModel->replaceKeys($params);

@@ -33,6 +33,14 @@ class NovelModel extends AbstractModel {
         self::NOVEL_RECORDING_FINISH => "完结",
         self::NOVEL_RECORDING_UNFINISH => "录入未完结"
     );
+    public static $_novel_class_pinxie = array(
+        self::NOVEL_CLASS_WUXIA => "wuxia",
+        self::NOVEL_CLASS_YANQING => "yanqing",
+        self::NOVEL_CLASS_XIANDAI => "xiandai",
+        self::NOVEL_CLASS_SCHOOL => "xiaoyuan",
+        self::NOVEL_CLASS_FANTASY => "xuanhuan",
+        self::NOVEL_CLASS_HORROR => "kongbu",
+    );
 
     public function replaceNovel($data){
         if(empty($data['name'])){
