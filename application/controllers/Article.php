@@ -22,7 +22,7 @@ class ArticleController extends AbstractController{
         try {
             $name = $this->getPost("class_name");
             $parentId = $this->getPost("parent_class");
-            $content = $this->getPost("content");
+            $content = $this->getPost("description");
             $id = $this->getPost("class_id");
 
             if(empty($name)){
