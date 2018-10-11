@@ -24,6 +24,7 @@ class ArticleController extends AbstractController{
             $parentId = $this->getPost("parent_class");
             $content = $this->getPost("description");
             $id = $this->getPost("class_id");
+            $status = $this->getPost("class_status");
 
             if(empty($name)){
                 throw new Exception("参数错误");
@@ -33,7 +34,8 @@ class ArticleController extends AbstractController{
                 "id" => $id,
                 "name" => $name,
                 "parent_id" => $parentId,
-                "content" => $content
+                "content" => $content,
+                "status" => $status
             );
             $articleTypeModel = new ArticlesTypeModel();
             $articleTypeModel->replaceClass($data);
