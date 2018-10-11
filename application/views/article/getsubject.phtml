@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="/css/pintuer.css">
+<link rel="stylesheet" href="/css/admin.css">
+<script src="/js/jquery.js"></script>
+<script src="/js/pintuer.js"></script>
+</head>
+<body>
+<div class="panel admin-panel margin-top" id="add">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 采集目录</strong></div>
+  <div class="body-content">
+    <form method="post" class="form-x" action="/article/postsubject">
+
+        <div class="form-group">
+            <div class="label">
+                <label>抓取类型：</label>
+            </div>
+            <div class="field">
+                <select id="getID" name="getdatatype" class="input w50">
+                    <option value="1">按分类抓取</option>
+                    <option value="2">按单篇抓取</option>
+                </select>
+            </div>
+        </div>
+        <div id="get_author">
+        <div class="form-group">
+            <div class="label">
+                <label>采集URL：</label>
+            </div>
+            <div class="field">
+                <input type="text" class="input w50" name="author_url" value=""  />
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>正则：</label>
+            </div>
+            <div class="field">
+                <input type="text" style="width: 90%" class="input w50" name="author_rule" value=""  />
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>作者：</label>
+            </div>
+            <div class="field">
+                <select name="author" id="author" class="input w50">
+                    <option value=""></option>
+                    <?php foreach ($this->author_list as $value){ ?>
+                        <option value="<?=$value['id']."_".$value['author_name']?>"><?=$value['author_name']?></option>
+                    <?php }?>
+                </select>
+            </div>
+        </div>
+
+
+        </div>
+        <div id="get_one">
+        <div class="form-group">
+            <div class="label">
+                <label>采集URL：</label>
+            </div>
+            <div class="field">
+                <input type="text" class="input w50" name="url" value=""  />
+                <div class="tips"></div>
+            </div>
+        </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>分类：</label>
+            </div>
+            <div class="field">
+                <div class="field">
+                    <select name="first_class" id="first_class" class="input w50">
+                        <?php foreach ($this->first_type_list as $value){ ?>
+                            <option value="<?=$value['id']?>"><?=$value['name']?></option>
+                        <?php }?>
+                    </select>
+                    <select name="class_id" id="class_id" class="input w50">
+                        <?php
+                        $firstType = array_shift($this->first_type_list);
+                        foreach ($this->type_list[$firstType['id']] as $value){ ?>
+                            <option value="<?=$value['id']?>"><?=$value['name']?></option>
+                        <?php }?>
+                    </select>
+                </div>
+                <div class="tips"></div>
+            </div>
+        </div>
+      <div class="form-group">
+        <div class="label">
+          <label>目录正则：</label>
+        </div>
+        <div class="field">
+          <input type="text" style="width: 90%" class="input w50" value="" name="title" data-validate="required:请输入标题" />
+          <div class="tips"></div>
+        </div>
+      </div>
+
+
+
+        <div class="form-group">
+            <div class="label">
+                <label>正文正则：</label>
+            </div>
+            <div class="field">
+                <input type="text" style="width: 90%"  class="input w50" value="" name="content" data-validate="required:请输入正文正则" /><input type="text" name="content_num" value="1">
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>采集网站编码：</label>
+            </div>
+            <div class="field">
+                <select name="code" class="input w50">
+                    <option value="gb2312">gb2312</option>
+                    <option value="UTF-8">UTF-8</option>
+                    <option value="GBK">GBK</option>
+
+                </select>
+                <div class="tips"></div>
+            </div>
+        </div>
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+        </div>
+      </div>
+    </form>
+      <textarea style="width: 500px;height: 200px;margin-left: 20px"></textarea>
+  </div>
+</div>
+<script>
+    var type_list = <?=json_encode($this->type_list)?>;
+    $("#first_class").change(function () {
+        $("#class_id").html('');
+        var first = $(this).val();
+        for(var k in type_list[first])
+        {
+            var option=type_list[first][k];
+            $("#class_id").append('<option value="'+option.id+'">'+option.name+'</option>');
+        }
+    });
+    $("#getID").change(function () {
+        if($(this).val() == 1){
+            $("#get_author").show();
+            $("#get_one").hide();
+        }else{
+            $("#get_author").hide();
+            $("#get_one").show();
+        }
+    });
+    <?php if(isset($_GET['id']) && $_GET['id'] > 0){?>
+    $("#get_author").hide();
+    $("#get_one").show();
+    $("#getID").val("2");
+    <?php }else{?>
+    $("#get_author").show();
+    $("#get_one").hide();
+    $("#getID").val("1")
+    <?php }?>
+</script>
+
+</body></html>

@@ -87,7 +87,7 @@
             ?>
             <tr>
                 <td><?=$key+1?></td>
-                <td><?=$value['title']?></td>
+                <td><a target="_blank" href="<?=$this->web_url?>/xiaoshuo/detail_<?=$value['id']?>.html"><?=$value['title']?></a></td>
                 <td><?=$value['status']==1?"正常":"冻结"?></td>
                 <td><?=$value['chapter_order']?></td>
                 <td><?=$value['is_part']==1?"是":"否"?></td>
