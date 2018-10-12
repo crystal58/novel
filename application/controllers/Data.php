@@ -132,6 +132,7 @@ class DataController extends AbstractController{
         $content = $this->getPost("content");
         $pathData = parse_url($url);
         $data = file_get_contents($url);
+        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
 
         // preg_match("/charset=(.*)\">/is",$data,$codeData);
         // echo 111;
@@ -142,13 +143,16 @@ class DataController extends AbstractController{
         if($code != "UTF-8"){
             $data = iconv($code,'UTF-8//IGNORE',$data);
         }
+
+
+//echo $data;
         preg_match("/$postTitle/isU",$data,$result);
+
         if(empty($result)){
             throw new Exception("正则出错了");
         }
         $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
         preg_match_all($reg,$result[0],$urlRet);
-
 
         $novelTmpModel = new NovelTmpModel();
         $count = $novelTmpModel->getCount(array("novel_id" => $novelId));

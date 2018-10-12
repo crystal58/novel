@@ -35,6 +35,7 @@ try{
         }
         $content = preg_replace('/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i', '', $content);
         $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
+        $content = preg_replace("/<script[^>]*>(.*?)<\/script*>/is", "", $content);
         $sqlData = array(
             "novel_id" => $value['novel_id'],
             "title" => $value['title'],
