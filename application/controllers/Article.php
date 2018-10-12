@@ -46,6 +46,13 @@ class ArticleController extends AbstractController{
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }
     }
+
+    /**
+     * 临时目录
+     */
+    public function listTmp(){
+
+    }
     /**
      * 采集目录
      */
@@ -137,8 +144,9 @@ class ArticleController extends AbstractController{
 
         $content = $this->getPost("content");
         $pathData = parse_url($url);
-       // $data = file_get_contents($url);
         $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+
+
         // preg_match("/charset=(.*)\">/is",$data,$codeData);
         // echo 111;
         // echo json_encode($codeData);exit;
@@ -155,7 +163,6 @@ class ArticleController extends AbstractController{
         }
         $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
         preg_match_all($reg,$result[0],$urlRet);
-        var_dump($urlRet);exit;
 
         $novelTmpModel = new NovelTmpModel();
         $count = $novelTmpModel->getCount(array("novel_id" => $classId));
@@ -186,12 +193,71 @@ class ArticleController extends AbstractController{
                 "code" => $code,
                 "class_type" => 2
             );
-            echo json_encode($subjectData);exit;
+           // echo json_encode($subjectData);exit;
             $count++;
         }
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
         }
+    }
+
+
+    public function testContentAction(){
+        $novelTmp = new NovelTmpModel();
+        $where = array(
+            "AND" => array(
+                "id" => 1104,
+                //"status" => 1,
+                "class_type" => 2
+            ),
+            "LIMIT" => array(0,50)
+        );
+        $list = $novelTmp->fetchAll($where);
+        foreach ($list as $value){
+            if(empty($value['title']))continue;
+            $url = $value["url"];
+            //$data = file_get_contents($url);
+            $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+            if($value['code']!= "UTF-8"){
+                $data = iconv($value['code'],'UTF-8//IGNORE',$data);
+            }
+            $contentRule = json_decode($value["content_url"],true);
+            $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
+           // echo $data = str_replace("%",'',$data);
+            //echo $rule = str_replace("/",'\/',$rule);
+            preg_match("#$rule#isU", $data, $contentRet);
+
+
+            $rule = '<td align="center" style="line-height: 200%">(.*)<\/td><\/tr><tr><td>';
+            preg_match("#$rule#is", $data, $contentRet);
+            var_dump($contentRet);
+            echo $rule;
+            echo $data;exit;
+
+            $content = $contentRet[$contentRule['num']];
+            $articleModel = new ArticlesModel();
+            if(empty($content)){
+                \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
+            }
+            $content = preg_replace('/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i', '', $content);
+            $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
+            $content = preg_replace("/<script[^>]*>(.*?)<\/script*>/is", "", $content);
+            $sqlData = array(
+                "class_type" => $value['novel_id'],
+                "name" => $value['title'],
+                "content" => $content,
+                "article_order" => $value['order'],
+                "create_time" => time(),
+                "update_time" => time(),
+                "status" => 1
+            );
+            $result = $articleModel->insert($sqlData);
+            if($result){
+                $novelTmp->update(array("status"=>NovelTmpModel::NOVEL_TMP_STATUS_FINISH),array("id"=>$value['id']));
+            }
+
+        }
+
     }
 
 }

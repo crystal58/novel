@@ -12,8 +12,9 @@ try{
     $novelTmp = new NovelTmpModel();
     $where = array(
         "AND" => array(
-            "status" => 1,
-            "class_type" => 1
+            "id" => 1104,
+            //"status" => 1,
+            "class_type" => 2
         ),
         "LIMIT" => array(0,50)
     );
@@ -28,9 +29,11 @@ try{
         }
         $contentRule = json_decode($value["content_url"],true);
         $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
+
+        echo $rule;
         preg_match("#$rule#is", $data, $contentRet);
         $content = $contentRet[$contentRule['num']];
-        $novelChapter = new NovelChapterModel();
+        $articleModel = new ArticlesModel();
         if(empty($content)){
             \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
         }
@@ -38,16 +41,15 @@ try{
         $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
         $content = preg_replace("/<script[^>]*>(.*?)<\/script*>/is", "", $content);
         $sqlData = array(
-            "novel_id" => $value['novel_id'],
-            "title" => $value['title'],
+            "class_type" => $value['novel_id'],
+            "name" => $value['title'],
             "content" => $content,
-            "keywords" => $value['title'],
-            "chapter_order" => $value['order'],
+            "article_order" => $value['order'],
             "create_time" => time(),
             "update_time" => time(),
             "status" => 1
         );
-        $result = $novelChapter->insert($sqlData);
+        $result = $articleModel->insert($sqlData);
         if($result){
             $novelTmp->update(array("status"=>NovelTmpModel::NOVEL_TMP_STATUS_FINISH),array("id"=>$value['id']));
         }

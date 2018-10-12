@@ -75,8 +75,9 @@
                 <td class="am-hide-sm-only"><?=date("Y-m-d H:i:s",$value['update_time'])?></td>
                 <td>
                     <div class="am-btn-toolbar">
-                        <div class="am-btn-group am-btn-group-xs">
-                            <button class="edit_button" data-status="<?=$value['status']?>" data-content="<?=$value['content']?>" data-id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-parent="<?=$value['parent_id']?>">编辑</button>
+                        <div class="button-group" style="align-content: left">
+                            <a class="button" data-status="<?=$value['status']?>" data-content="<?=$value['content']?>" data-id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-parent="<?=$value['parent_id']?>">编辑</a>
+                            <a href="/novel/subject?id=<?=$value['id']?>&class_type=2" class="button"> 临时目录</a>
                         </div>
                     </div>
                 </td>
