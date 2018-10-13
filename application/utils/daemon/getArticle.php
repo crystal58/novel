@@ -12,8 +12,8 @@ try{
     $novelTmp = new NovelTmpModel();
     $where = array(
         "AND" => array(
-            "id" => 1104,
-            //"status" => 1,
+            //"id" => 1111,
+            "status" => 1,
             "class_type" => 2
         ),
         "LIMIT" => array(0,50)
@@ -29,9 +29,9 @@ try{
         }
         $contentRule = json_decode($value["content_url"],true);
         $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
+        preg_match("#$rule#isU", $data, $contentRet);
+        var_dump($contentRet);
 
-        echo $rule;
-        preg_match("#$rule#is", $data, $contentRet);
         $content = $contentRet[$contentRule['num']];
         $articleModel = new ArticlesModel();
         if(empty($content)){
@@ -40,6 +40,9 @@ try{
         $content = preg_replace('/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i', '', $content);
         $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
         $content = preg_replace("/<script[^>]*>(.*?)<\/script*>/is", "", $content);
+        $content = str_replace(array("<td>","<tr>","</td>","</tr>"), "", $content);
+        $content = str_replace('<hr color="#FFFFFF">', "", $content);
+
         $sqlData = array(
             "class_type" => $value['novel_id'],
             "name" => $value['title'],
@@ -47,12 +50,15 @@ try{
             "article_order" => $value['order'],
             "create_time" => time(),
             "update_time" => time(),
-            "status" => 1
+            "status" => 1,
+            "author" => $contentRet[2]
         );
         $result = $articleModel->insert($sqlData);
         if($result){
             $novelTmp->update(array("status"=>NovelTmpModel::NOVEL_TMP_STATUS_FINISH),array("id"=>$value['id']));
         }
+
+
 
     }
 }catch (Exception $e){
