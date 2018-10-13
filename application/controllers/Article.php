@@ -157,7 +157,6 @@ class ArticleController extends AbstractController{
             $data = iconv($code,'UTF-8//IGNORE',$data);
         }
         preg_match("/$postTitle/isU",$data,$result);
-
         if(empty($result)){
             throw new Exception("正则出错了");
         }
@@ -195,6 +194,7 @@ class ArticleController extends AbstractController{
             );
            // echo json_encode($subjectData);exit;
             $count++;
+            //break;
         }
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
@@ -203,11 +203,16 @@ class ArticleController extends AbstractController{
 
 
     public function testContentAction(){
+//        $find = array("Hello","world");
+//        $replace = array("B","A");
+//        $arr = "Hello,world,!";
+//        print_r(str_replace($find,"",$arr));
+//        exit;
         $novelTmp = new NovelTmpModel();
         $where = array(
             "AND" => array(
-                "id" => 1104,
-                //"status" => 1,
+                //"id" => 1111,
+                "status" => 1,
                 "class_type" => 2
             ),
             "LIMIT" => array(0,50)
@@ -223,16 +228,8 @@ class ArticleController extends AbstractController{
             }
             $contentRule = json_decode($value["content_url"],true);
             $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
-           // echo $data = str_replace("%",'',$data);
-            //echo $rule = str_replace("/",'\/',$rule);
             preg_match("#$rule#isU", $data, $contentRet);
-
-
-            $rule = '<td align="center" style="line-height: 200%">(.*)<\/td><\/tr><tr><td>';
-            preg_match("#$rule#is", $data, $contentRet);
             var_dump($contentRet);
-            echo $rule;
-            echo $data;exit;
 
             $content = $contentRet[$contentRule['num']];
             $articleModel = new ArticlesModel();
@@ -242,6 +239,9 @@ class ArticleController extends AbstractController{
             $content = preg_replace('/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i', '', $content);
             $content = preg_replace("/<a[^>]*>(.*?)<\/a*>/is", "", $content);
             $content = preg_replace("/<script[^>]*>(.*?)<\/script*>/is", "", $content);
+            $content = str_replace(array("<td>","<tr>","</td>","</tr>"), "", $content);
+            $content = str_replace('<hr color="#FFFFFF">', "", $content);
+
             $sqlData = array(
                 "class_type" => $value['novel_id'],
                 "name" => $value['title'],
@@ -249,7 +249,8 @@ class ArticleController extends AbstractController{
                 "article_order" => $value['order'],
                 "create_time" => time(),
                 "update_time" => time(),
-                "status" => 1
+                "status" => 1,
+                "author" => $contentRet[2]
             );
             $result = $articleModel->insert($sqlData);
             if($result){
