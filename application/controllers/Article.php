@@ -37,6 +37,12 @@ class ArticleController extends AbstractController{
                 "content" => $content,
                 "status" => $status
             );
+
+            if($_FILES['img']['name']){
+                $file = new \YC\File\upFile();
+                $imgInfo = $_FILES['img'];$fileId = $file->store($imgInfo);
+                $data['pic'] = $fileId;
+            }
             $articleTypeModel = new ArticlesTypeModel();
             $articleTypeModel->replaceClass($data);
 

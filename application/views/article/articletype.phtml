@@ -15,7 +15,7 @@
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><input type="button" value="添加分类" id="add_button"></div>
   <div class="body-content" style="display: none;"  id="edit_window">
-    <form method="post" class="form-x" action="/article/replace" id="edit_window_form">
+    <form method="post" class="form-x" action="/article/replace" id="edit_window_form" enctype="multipart/form-data">
       <div class="form-group" >
           <div class="field">
               <label class="label" style="width: 80px;">名称：</label>
@@ -42,6 +42,16 @@
               <textarea  rows="5" class="input w50" name="description" id="description"></textarea>
           </div>
       </div>
+        <div class="form-group" >
+            <div class="label" style="width: 80px;">
+                <label>封面：</label>
+            </div>
+            <div class="field">
+                <img id="pic" src="" width="30px" height="30px">
+                <input type="file" class="input w50" value="" id="img" name="img"  />
+                <div class="tips"></div>
+            </div>
+        </div>
 
           <input type="hidden" value="" name="class_id" id="class_id">
           <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
@@ -76,7 +86,7 @@
                 <td>
                     <div class="am-btn-toolbar">
                         <div class="button-group" style="align-content: left">
-                            <a class="button" data-status="<?=$value['status']?>" data-content="<?=$value['content']?>" data-id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-parent="<?=$value['parent_id']?>">编辑</a>
+                            <a class="button edit_button" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-status="<?=$value['status']?>" data-content="<?=$value['content']?>" data-id="<?=$value['id']?>" data-name="<?=$value['name']?>" data-parent="<?=$value['parent_id']?>">编辑</a>
                             <a href="/novel/subject?id=<?=$value['id']?>&class_type=2" class="button"> 临时目录</a>
                         </div>
                     </div>
@@ -95,6 +105,7 @@
             $("#parent_class").val($(this).data("parent"));
             $("#description").val($(this).data("content"));
             $("#class_status").val($(this).data("status"));
+            $("#pic").attr("src",$(this).data("pic"));
             $("#edit_window").show();
 
         }
