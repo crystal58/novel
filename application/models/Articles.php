@@ -10,15 +10,15 @@ class ArticlesModel extends AbstractModel {
 
 
 
-    public function replaceClass($data){
+    public function replaceArticle($data){
         if(empty($data['name'])){
             return false;
         }
         $data['update_time'] = time();
-        $classId = $data['id'];
+        $articleId = $data['id'];
         unset($data['id']);
-        if($classId > 0){
-            return $this->update($data,array("id"=>$classId));
+        if($articleId > 0){
+            return $this->update($data,array("id"=>$articleId));
         }
         $data['create_time'] = time();
         return $this->insert($data);
@@ -27,12 +27,21 @@ class ArticlesModel extends AbstractModel {
     /**
      * isCount   是否返回count
      */
-    public function getList($params) {
+    public function getList($params,$offset = 0,$pageSize=null,$order=null,$isCount=false) {
         $where = array();
         foreach($params as $key=>$value){
             $where['AND'] = array(
                 $key => $value
             );
+        }
+        if($isCount){
+            $result['cnt'] = $this->count($where);
+        }
+        if($pageSize){
+            $where['LIMIT'] = array($offset,$pageSize);
+        }
+        if($order){
+            $where['ORDER'] = $order;
         }
         $result['list'] = $this->fetchAll($where);
         return $result;

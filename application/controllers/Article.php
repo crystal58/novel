@@ -54,10 +54,60 @@ class ArticleController extends AbstractController{
     }
 
     /**
-     * 临时目录
+     * 真实目录
      */
-    public function listTmp(){
+    public function listAction(){
+        try{
+            $id = $this->get("id");
+            $articleModel = new ArticlesModel();
+            $params = array(
+                "status" => ArticlesModel::ARTICLE_CLASS_STATUS,
+                "class_type" => $id
+            );
+            $page = (int)$this->get("page",1);
+            $page = $page>0 ? $page :1;
+            $offset = ($page-1) * self::PAGESIZE;
 
+            $articleList = $articleModel->getList($params,$offset,self::PAGESIZE,array("article_order"=>"ASC"),true);
+
+            $this->_view->list = $articleList['list'];
+            $ph = new \YC\Page($articleList['cnt'],$page,self::PAGESIZE);
+            $this->_view->pageHtml = $ph->getPageHtml();
+
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+
+    public function editarticleAction(){
+        try{
+            $id = $this->get("id");
+            $classType = $this->get("class_type");
+//            if($id <= 0){
+//                throw new Exception("参数错误（id={$id}）",400);
+//            }
+            $params = array(
+                "name" => $this->get("title"),
+                "article_order" => $this->get("order"),
+                "status" => $this->get("status"),
+                "class_type" => $classType,
+                "is_part" => $this->get("is_part")
+            );
+            $content = $this->get("content");
+            if($content){
+                $params['content'] = $content;
+            }
+
+            if($id >0){
+                $params['id'] = $id;
+            }
+            //echo json_encode($params);exit;
+            $articleModel = new ArticlesModel();
+            $result = $articleModel->replaceArticle($params);
+            $this->redirect("/article/list?id=".$classType."&class_type=2");
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
     }
     /**
      * 采集目录
@@ -135,7 +185,7 @@ class ArticleController extends AbstractController{
                     $url = $this->getPost("url");
                     $classId = $this->getPost("class_id");
                     $this->caiJi($url,$classId);
-                    echo "采集目录成功，<a href='/article/subject?id={$classId}'>查看</a>";
+                    echo "采集目录成功，<a href='/novel/subject?id={$classId}'>查看</a>";
                 }
 
 
