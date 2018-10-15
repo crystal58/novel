@@ -250,7 +250,7 @@ class ArticleController extends AbstractController{
             );
            // echo json_encode($subjectData);exit;
             $count++;
-            break;
+           // break;
         }
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
