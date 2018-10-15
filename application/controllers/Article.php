@@ -177,7 +177,7 @@ class ArticleController extends AbstractController{
                         $novelId = $novelModel->insert($novel);
                         $url = $value;
                         $this->caiJi($url,$novelId);
-                        echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a><br>";
+                        echo "采集目录成功，<a href='/novel/subject?id={$novelId}&class_type=2'>查看</a><br>";
                         // exit;
                     }
                     exit;
@@ -185,7 +185,7 @@ class ArticleController extends AbstractController{
                     $url = $this->getPost("url");
                     $classId = $this->getPost("class_id");
                     $this->caiJi($url,$classId);
-                    echo "采集目录成功，<a href='/novel/subject?id={$classId}'>查看</a>";
+                    echo "采集目录成功，<a href='/novel/subject?id={$classId}&class_type=2'>查看</a>";
                 }
 
 
@@ -250,7 +250,7 @@ class ArticleController extends AbstractController{
             );
            // echo json_encode($subjectData);exit;
             $count++;
-            //break;
+            break;
         }
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
@@ -258,7 +258,7 @@ class ArticleController extends AbstractController{
     }
 
 
-    public function testContentAction(){
+    public function specialContentAction(){
 //        $find = array("Hello","world");
 //        $replace = array("B","A");
 //        $arr = "Hello,world,!";
@@ -267,8 +267,8 @@ class ArticleController extends AbstractController{
         $novelTmp = new NovelTmpModel();
         $where = array(
             "AND" => array(
-                //"id" => 1111,
-                "status" => 1,
+                "novel_id" => 1416,
+                //"status" => 1,
                 "class_type" => 2
             ),
             "LIMIT" => array(0,50)
@@ -285,9 +285,17 @@ class ArticleController extends AbstractController{
             $contentRule = json_decode($value["content_url"],true);
             $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
             preg_match("#$rule#isU", $data, $contentRet);
-            var_dump($contentRet);
-
             $content = $contentRet[$contentRule['num']];
+            $author_name = isset($contentRet[2])?$contentRet[2]:"";
+            //var_dump($contentRet);exit;
+
+            //全唐诗
+
+            $rule = "」(.*)<br>";
+            preg_match("#$rule#isU", $content, $authorData);
+            $author_name = trim($authorData[1]);
+
+
             $articleModel = new ArticlesModel();
             if(empty($content)){
                 \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
@@ -306,7 +314,7 @@ class ArticleController extends AbstractController{
                 "create_time" => time(),
                 "update_time" => time(),
                 "status" => 1,
-                "author" => $contentRet[2]
+                "author" => $author_name
             );
             $result = $articleModel->insert($sqlData);
             if($result){
