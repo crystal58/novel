@@ -267,7 +267,7 @@ class ArticleController extends AbstractController{
         $novelTmp = new NovelTmpModel();
         $where = array(
             "AND" => array(
-                "novel_id" => 1416,
+                "novel_id" => 16,
                 //"status" => 1,
                 "class_type" => 2
             ),
