@@ -267,8 +267,9 @@ class ArticleController extends AbstractController{
         $novelTmp = new NovelTmpModel();
         $where = array(
             "AND" => array(
-                "novel_id" => 16,
-                //"status" => 1,
+               //"id" => 1416,
+                 "novel_id" => 16,
+                "status" => 0,
                 "class_type" => 2
             ),
             "LIMIT" => array(0,50)
@@ -279,8 +280,12 @@ class ArticleController extends AbstractController{
             $url = $value["url"];
             //$data = file_get_contents($url);
             $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+            if($value['code'] == "gb2312"){
+                $code = "GBK";
+            }
             if($value['code']!= "UTF-8"){
-                $data = iconv($value['code'],'UTF-8//IGNORE',$data);
+                $data = iconv($code,'UTF-8//IGNORE',$data);
+                //$data = mb_convert_encoding($data,'UTF-8',$code);
             }
             $contentRule = json_decode($value["content_url"],true);
             $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
