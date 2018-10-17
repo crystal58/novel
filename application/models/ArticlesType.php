@@ -27,14 +27,19 @@ class ArticlesTypeModel extends AbstractModel {
     /**
      * isCount   是否返回count
      */
-    public function getList($params) {
+    public function getList($params,$offset = 0,$pageSize = null,$isCount = false) {
         $where = array();
         foreach($params as $key=>$value){
-            $where['AND'] = array(
-                $key => $value
-            );
+            $where['AND'][$key] = $value;
+        }
+        if($isCount){
+            $result['cnt'] = $this->count($where);
+        }
+        if($pageSize){
+            $where['AND']['LIMIT'] = array($offset,$pageSize);
         }
         $result['list'] = $this->fetchAll($where);
+
         return $result;
     }
 

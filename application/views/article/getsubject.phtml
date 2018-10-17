@@ -23,12 +23,12 @@
             </div>
             <div class="field">
                 <select id="getID" name="getdatatype" class="input w50">
-                    <option value="1">按分类抓取</option>
+<!--                    <option value="1">按分类抓取</option>-->
                     <option value="2">按单篇抓取</option>
                 </select>
             </div>
         </div>
-        <div id="get_author">
+        <div id="get_author" style="display: none">
         <div class="form-group">
             <div class="label">
                 <label>采集URL：</label>
@@ -47,6 +47,10 @@
                 <div class="tips"></div>
             </div>
         </div>
+
+
+
+        </div>
         <div class="form-group">
             <div class="label">
                 <label>作者：</label>
@@ -54,14 +58,11 @@
             <div class="field">
                 <select name="author" id="author" class="input w50">
                     <option value=""></option>
-                    <?php foreach ($this->author_list as $value){ ?>
+                    <?php foreach ($this->author as $value){ ?>
                         <option value="<?=$value['id']."_".$value['author_name']?>"><?=$value['author_name']?></option>
                     <?php }?>
                 </select>
             </div>
-        </div>
-
-
         </div>
         <div id="get_one">
         <div class="form-group">
@@ -81,11 +82,13 @@
             <div class="field">
                 <div class="field">
                     <select name="first_class" id="first_class" class="input w50">
+                        <option value="0"></option>
                         <?php foreach ($this->first_type_list as $value){ ?>
                             <option value="<?=$value['id']?>"><?=$value['name']?></option>
                         <?php }?>
                     </select>
                     <select name="class_id" id="class_id" class="input w50">
+                        <option value="0"></option>
                         <?php
                         $firstType = array_shift($this->first_type_list);
                         foreach ($this->type_list[$firstType['id']] as $value){ ?>
@@ -114,6 +117,15 @@
             </div>
             <div class="field">
                 <input type="text" style="width: 90%"  class="input w50" value="" name="content" data-validate="required:请输入正文正则" /><input type="text" name="content_num" value="1">
+                <div class="tips"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="label">
+                <label>页数：</label>
+            </div>
+            <div class="field">
+                <input type="text" name="page" value="">
                 <div class="tips"></div>
             </div>
         </div>
@@ -148,6 +160,7 @@
     $("#first_class").change(function () {
         $("#class_id").html('');
         var first = $(this).val();
+        $("#class_id").append('<option value="0"></option>');
         for(var k in type_list[first])
         {
             var option=type_list[first][k];
@@ -163,15 +176,6 @@
             $("#get_one").show();
         }
     });
-    <?php if(isset($_GET['id']) && $_GET['id'] > 0){?>
-    $("#get_author").hide();
-    $("#get_one").show();
-    $("#getID").val("2");
-    <?php }else{?>
-    $("#get_author").show();
-    $("#get_one").hide();
-    $("#getID").val("1")
-    <?php }?>
 </script>
 
 </body></html>

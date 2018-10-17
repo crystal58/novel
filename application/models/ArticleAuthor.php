@@ -1,9 +1,9 @@
 <?php
-class AuthorModel extends AbstractModel {
+class ArticleAuthorModel extends AbstractModel {
     const AUTHOR_STATUS = 1;     //正常
     const AUTHOR_STATUS_DEL = -1; //删除
 
-    protected $_table = "author";
+    protected $_table = "article_author";
     protected $_database = "account";
     protected $_primary = "id"; 
 
@@ -15,6 +15,7 @@ class AuthorModel extends AbstractModel {
         }
         $authorId = $data['author_id'];
         unset($data['author_id']);
+
         if($authorId > 0){
             return $this->update($data,array("id"=>$authorId));
         }

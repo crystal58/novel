@@ -23,16 +23,54 @@ try{
         if(empty($value['title']))continue;
         $url = $value["url"];
         //$data = file_get_contents($url);
-        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
-        if($value['code']!= "UTF-8"){
-            $data = iconv($value['code'],'UTF-8//IGNORE',$data);
+        $data = \YC\Common::readfile($url);
+        //var_dump($data);exit;
+        $data = preg_replace('/\s[\s]+/', '', $data);
+        if($value['code'] == "gb2312"){
+            $code = "GBK";
         }
-        $contentRule = json_decode($value["content_url"],true);
-        $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
-        preg_match("#$rule#isU", $data, $contentRet);
-        var_dump($contentRet);
+        if($value['code']!= "UTF-8"){
+            $data = iconv($code,'UTF-8//IGNORE',$data);
+            //$data = mb_convert_encoding($data,'UTF-8',$code);
+        }
 
-        $content = $contentRet[$contentRule['num']];
+
+        $key = array();
+        $rule = '(.*)<h1>(.*)</h1>(.*)<\/span><\/div><div class="shici-content">(.*)';
+        $i = 5;
+        if(strpos($data,'<h2 class="inline">古诗简介</h2>')){
+            $rule .= '古诗简介(.*)';
+            $key['description'] = $i;
+            $i++;
+        }
+        if(strpos($data,'<h2 class="inline">翻译/译文</h2>')){
+            $rule .= '翻译/译文(.*)';
+            $key['translate'] = $i;
+            $i++;
+        }
+        if(strpos($data,'<h2 class="inline">注释</h2>')){
+            $rule .= '注释(.*)';
+            $key['zhushi'] = $i;
+            $i++;
+        }
+        if(strpos($data,'<h2 class="inline">赏析/鉴赏</h2>')){
+            $rule .= '赏析/鉴赏(.*)';
+            $key['shangxi'] = $i;
+            $i++;
+        }
+        $rule .= "<div class=\"main-content\"><div class=\"title text-dark-red\"><h2 class=\"inline\">";
+
+        preg_match("#$rule#isU", $data, $contentRet);
+        //var_dump($contentRet);exit;
+        $title = strip_tags($contentRet[2],"<p>");
+        $content = strip_tags($contentRet[4],"<p>");
+
+        $description = isset($key['description']) ? strip_tags($contentRet[$key['description']],"<p>") : "";
+        $translate = isset($key['translate']) ? strip_tags($contentRet[$key['translate']],"<p>") : "";
+        $zhushi = isset($key['zhushi']) ? strip_tags($contentRet[$key['zhushi']],"<p>"):"";
+        $shangxi = isset($key['shangxi']) ? strip_tags($contentRet[$key['shangxi']],"<p>"): "";
+
+
         $articleModel = new ArticlesModel();
         if(empty($content)){
             \YC\LoggerHelper::ERR('CRON_NOVELCONTENT_getDATA_empty', $value['novel_id']."_".$value['title']."_".$value['order']);
@@ -51,14 +89,18 @@ try{
             "create_time" => time(),
             "update_time" => time(),
             "status" => 1,
-            "author" => $contentRet[2]
+            "author" => $value['author_name'],
+            "author_id" => $value['author_id'],
+            "description" => $description,
+            "translate" => $translate,
+            "notes" => $zhushi,
+            "shangxi" => $shangxi
         );
+        //var_dump($sqlData);exit;
         $result = $articleModel->insert($sqlData);
         if($result){
             $novelTmp->update(array("status"=>NovelTmpModel::NOVEL_TMP_STATUS_FINISH),array("id"=>$value['id']));
         }
-
-
 
     }
 }catch (Exception $e){

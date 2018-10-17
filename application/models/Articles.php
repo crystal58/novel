@@ -30,9 +30,7 @@ class ArticlesModel extends AbstractModel {
     public function getList($params,$offset = 0,$pageSize=null,$order=null,$isCount=false) {
         $where = array();
         foreach($params as $key=>$value){
-            $where['AND'] = array(
-                $key => $value
-            );
+            $where['AND'][$key] = $value;
         }
         if($isCount){
             $result['cnt'] = $this->count($where);

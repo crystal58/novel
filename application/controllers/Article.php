@@ -128,6 +128,9 @@ class ArticleController extends AbstractController{
                 }
                 $typeList[$value['parent_id']][] = $value;
             }
+            $articleAuthorModel = new ArticleAuthorModel();
+            $author = $articleAuthorModel->getAllAuthor();
+            $this->_view->author = $author;
             $this->_view->type_list = $typeList;
             $this->_view->first_type_list = $firstTypeList;
             //echo json_encode($firstTypeList);exit;
@@ -143,50 +146,57 @@ class ArticleController extends AbstractController{
             if($request->isPost()){
                 $getDataType = $this->getPost("getdatatype");
                 $code = $this->get("code");
-                if($getDataType == 1){
-                    // echo $authorUrl."<br>";
-                    $authorUrl = $this->getPost("author_url");
-                    $authorData = file_get_contents($authorUrl);
+//                if($getDataType == 1){
+//                    // echo $authorUrl."<br>";
+//                    $authorUrl = $this->getPost("author_url");
+//                    $authorData = file_get_contents($authorUrl);
+//
+//                    if($code != "UTF-8"){
+//                        $authorData = iconv($code,'UTF-8//IGNORE',$authorData);
+//                    }
+//                    //echo $authorData."<br>";
+//                    $authorRule = $this->getPost("author_rule");
+//                    preg_match("/$authorRule/isU", $authorData,$authorNovel);
+//                    //var_dump($authorNovel[1]);exit;
+//                    $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
+//                    preg_match_all($reg,$authorNovel[1],$authorUrlRet);
+//                    $authorInfo = explode("_",$this->getPost("author"));
+//                    $novelClass = explode("_",$this->getPost("novel_class"));
+//
+//                    foreach ($authorUrlRet[1] as $key=>$value){
+//                        $novel = array(
+//                            "name" => $authorUrlRet[2][$key],
+//                            "author_id" => $authorInfo[0],
+//                            "author_name"=> $authorInfo[1],
+//                            "content" => "",
+//                            "novel_class_id" => $novelClass[0],
+//                            "novel_class_name" => $novelClass[1],
+//                            "operator_id" => $this->_operatorId,
+//                            "create_time" => time(),
+//                            "update_time" => time(),
+//
+//                        );
+//                        $novelModel = new NovelModel();
+//                        $novelId = $novelModel->insert($novel);
+//                        $url = $value;
+//                        $this->caiJi($url,$novelId);
+//                        echo "采集目录成功，<a href='/novel/subject?id={$novelId}&class_type=2'>查看</a><br>";
+//                        // exit;
+//                    }
+//                    exit;
+//                }else{
+                    $url = $webUrl = $this->getPost("url");
+                    $classId = $this->getPost("class_id") ?:$this->getPost("first_class");
+                    $page = $this->getPost("page");
+                    for ($i=1;$i<= $page; $i++) {
+                        if($i > 1) {
+                            $url = $webUrl . "page".$i."/";
+                        }
+                        $this->caiJi($url,$classId);
 
-                    if($code != "UTF-8"){
-                        $authorData = iconv($code,'UTF-8//IGNORE',$authorData);
                     }
-                    //echo $authorData."<br>";
-                    $authorRule = $this->getPost("author_rule");
-                    preg_match("/$authorRule/isU", $authorData,$authorNovel);
-                    //var_dump($authorNovel[1]);exit;
-                    $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
-                    preg_match_all($reg,$authorNovel[1],$authorUrlRet);
-                    $authorInfo = explode("_",$this->getPost("author"));
-                    $novelClass = explode("_",$this->getPost("novel_class"));
-
-                    foreach ($authorUrlRet[1] as $key=>$value){
-                        $novel = array(
-                            "name" => $authorUrlRet[2][$key],
-                            "author_id" => $authorInfo[0],
-                            "author_name"=> $authorInfo[1],
-                            "content" => "",
-                            "novel_class_id" => $novelClass[0],
-                            "novel_class_name" => $novelClass[1],
-                            "operator_id" => $this->_operatorId,
-                            "create_time" => time(),
-                            "update_time" => time(),
-
-                        );
-                        $novelModel = new NovelModel();
-                        $novelId = $novelModel->insert($novel);
-                        $url = $value;
-                        $this->caiJi($url,$novelId);
-                        echo "采集目录成功，<a href='/novel/subject?id={$novelId}&class_type=2'>查看</a><br>";
-                        // exit;
-                    }
-                    exit;
-                }else{
-                    $url = $this->getPost("url");
-                    $classId = $this->getPost("class_id");
-                    $this->caiJi($url,$classId);
                     echo "采集目录成功，<a href='/novel/subject?id={$classId}&class_type=2'>查看</a>";
-                }
+                //}
 
 
             }
@@ -195,28 +205,28 @@ class ArticleController extends AbstractController{
         }
     }
 
-    private function caiJi($url,$classId){
 
+
+    private function caiJi($url,$classId){
 
         $content = $this->getPost("content");
         $pathData = parse_url($url);
-        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
 
+        $data = \YC\Common::readfile($url);
+        $data = preg_replace('/\s[\s]+/', '', $data);
 
-        // preg_match("/charset=(.*)\">/is",$data,$codeData);
-        // echo 111;
-        // echo json_encode($codeData);exit;
 
         $postTitle = $this->getPost("title");
         $code = $this->getPost("code");
         if($code != "UTF-8"){
             $data = iconv($code,'UTF-8//IGNORE',$data);
         }
+
         preg_match("/$postTitle/isU",$data,$result);
         if(empty($result)){
             throw new Exception("正则出错了");
         }
-        $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
+        $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
         preg_match_all($reg,$result[0],$urlRet);
 
         $novelTmpModel = new NovelTmpModel();
@@ -238,6 +248,12 @@ class ArticleController extends AbstractController{
                 }
                 $subjectUrl = $scheme."://".$host.$path.$value;
             }
+            $author = $this->getPost("author");
+            if($author){
+                $authorInfo = explode("_",$author);
+                $authorId = $authorInfo[0];
+                $authorName = $authorInfo[1];
+            }
             $subjectData[] = array(
                 "novel_id" => $classId,
                 "title" => $urlRet[2][$key],
@@ -246,14 +262,83 @@ class ArticleController extends AbstractController{
                 "content_url" => json_encode(array("content"=>$content,"num"=>$this->getPost("content_num"))),
                 "order" => $count,
                 "code" => $code,
-                "class_type" => 2
+                "class_type" => 2,
+                "author_id" => isset($authorId) ? $authorId : 0,
+                "author_name" => isset($authorName) ? $authorName : ""
             );
            // echo json_encode($subjectData);exit;
             $count++;
+            if($count == 10)break;
            // break;
         }
+        //var_dump($subjectData);exit;
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
+        }
+    }
+
+    public function authorAction(){
+        try {
+            $page = ((int)$this->get("page", 1)) > 0 ? (int)$this->get("page", 1) : 1;
+            $offset = ($page - 1) * self::PAGESIZE;
+            $articleAuthorModel = new ArticleAuthorModel();
+            $author = $articleAuthorModel->getList(array(), $offset, self::PAGESIZE, true);
+            $this->_view->list = $author['list'];
+
+            $articleTypeModel = new ArticlesTypeModel();
+            $articleType = $articleTypeModel->getList(array("parent_id"=>0,"status"=>ArticlesTypeModel::ARTICLE_CLASS_STATUS));
+            $articleTypeList = array();
+            foreach ($articleType['list'] as $value){
+                $articleTypeList[$value['id']] = $value;
+            }
+
+            $this->_view->article_type =$articleTypeList;
+
+
+            $ph = new \YC\Page($author['cnt'], $page, self::PAGESIZE);
+            $this->_view->pageHtml = $ph->getPageHtml();
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+
+    public function postauthorAction(){
+        try{
+            if ($this->getRequest()->isPost()) {
+                $authorName = $this->getPost("name");
+                if (empty($authorName)) {
+                    throw new Exception("参数错误", 400);
+                }
+                $description = $this->getPost("description");
+                $params = array(
+                    "author_name" => $authorName,
+                    "description" => $description,
+                    "operator_id" => $this->_operatorId,
+                    "create_time" => time(),
+                    "update_time" => time(),
+                    "author_id" => $this->getPost("author_id"),
+                    "class_type_id" => $this->getPost("novel_class_id"),
+                    "status" => $this->getPost("author_status")
+
+                );
+                //  echo json_encode($params);exit;
+                $imgInfo = $_FILES['img'];
+                if($_FILES['img']['name']){
+                    $file = new \YC\File\upFile();
+                    $fileId = $file->store($imgInfo);
+                    $params['pic'] = $fileId;
+                }
+
+                //echo json_encode($params);exit;
+                $authorModel = new ArticleAuthorModel();
+                $return = $authorModel->replaceAuthor($params);
+                if(!$return){
+                    throw new Exception("操作失败");
+                }
+                $this->redirect("/article/author");
+            }
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }
     }
 
@@ -267,19 +352,22 @@ class ArticleController extends AbstractController{
         $novelTmp = new NovelTmpModel();
         $where = array(
             "AND" => array(
-               //"id" => 1416,
-                 "novel_id" => 16,
-                "status" => 0,
+               "id" => 1454,
+               //  "novel_id" => 16,
+               // "status" => 0,
                 "class_type" => 2
             ),
             "LIMIT" => array(0,50)
         );
         $list = $novelTmp->fetchAll($where);
+        //var_dump($list);
         foreach ($list as $value){
             if(empty($value['title']))continue;
             $url = $value["url"];
             //$data = file_get_contents($url);
-            $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+            $data = \YC\Common::readfile($url);
+            //var_dump($data);exit;
+            $data = preg_replace('/\s[\s]+/', '', $data);
             if($value['code'] == "gb2312"){
                 $code = "GBK";
             }
@@ -287,18 +375,65 @@ class ArticleController extends AbstractController{
                 $data = iconv($code,'UTF-8//IGNORE',$data);
                 //$data = mb_convert_encoding($data,'UTF-8',$code);
             }
-            $contentRule = json_decode($value["content_url"],true);
-            $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
+//            $contentRule = json_decode($value["content_url"],true);
+//            $rule = preg_replace('/\s[\s]+/', '', $contentRule['content']);
+         //   echo $data;
+
+
+            $key = array();
+            $rule = '(.*)<h1>(.*)</h1>(.*)<\/span><\/div><div class="shici-content">(.*)';
+            $i = 5;
+            if(strpos($data,'<h2 class="inline">古诗简介</h2>')){
+                $rule .= '古诗简介(.*)';
+                $key['description'] = $i;
+                $i++;
+            }
+            if(strpos($data,'<h2 class="inline">翻译/译文</h2>')){
+                $rule .= '翻译/译文(.*)';
+                $key['translate'] = $i;
+                $i++;
+            }
+            if(strpos($data,'<h2 class="inline">注释</h2>')){
+                $rule .= '注释(.*)';
+                $key['zhushi'] = $i;
+                $i++;
+            }
+            if(strpos($data,'<h2 class="inline">赏析/鉴赏</h2>')){
+                $rule .= '赏析/鉴赏(.*)';
+                $key['shangxi'] = $i;
+                $i++;
+            }
+            $rule .= "<div class=\"main-content\"><div class=\"title text-dark-red\"><h2 class=\"inline\">";
+
             preg_match("#$rule#isU", $data, $contentRet);
-            $content = $contentRet[$contentRule['num']];
-            $author_name = isset($contentRet[2])?$contentRet[2]:"";
+            //var_dump($contentRet);exit;
+            $title = strip_tags($contentRet[2],"<p>");
+            $content = strip_tags($contentRet[4],"<p>");
+
+            $description = isset($key['description']) ? strip_tags($contentRet[$key['description']],"<p>") : "";
+            $translate = isset($key['translate']) ? strip_tags($contentRet[$key['translate']],"<p>") : "";
+            $zhushi = isset($key['zhushi']) ? strip_tags($contentRet[$key['zhushi']],"<p>"):"";
+            $shangxi = isset($key['shangxi']) ? strip_tags($contentRet[$key['shangxi']],"<p>"): "";
+
+
+//            $a = array(
+//                "title" => $title,
+//                "content" => $content,
+//                "description" => $description,
+//                "translate" =>$translate,
+//                "zhushi" => $zhushi,
+//                "shangxi" => $shangxi
+//            );
+//            echo json_encode($a);exit;
+            //$content = $contentRet[$contentRule['num']];
+            //$author_name = isset($contentRet[2])?$contentRet[2]:"";
             //var_dump($contentRet);exit;
 
             //全唐诗
 
-            $rule = "」(.*)<br>";
-            preg_match("#$rule#isU", $content, $authorData);
-            $author_name = trim($authorData[1]);
+//            $rule = "」(.*)<br>";
+//            preg_match("#$rule#isU", $content, $authorData);
+//            $author_name = trim($authorData[1]);
 
 
             $articleModel = new ArticlesModel();
@@ -319,8 +454,14 @@ class ArticleController extends AbstractController{
                 "create_time" => time(),
                 "update_time" => time(),
                 "status" => 1,
-                "author" => $author_name
+                "author" => $value['author_name'],
+                "author_id" => $value['author_id'],
+                "description" => $description,
+                "translate" => $translate,
+                "notes" => $zhushi,
+                "shangxi" => $shangxi
             );
+            //var_dump($sqlData);exit;
             $result = $articleModel->insert($sqlData);
             if($result){
                 $novelTmp->update(array("status"=>NovelTmpModel::NOVEL_TMP_STATUS_FINISH),array("id"=>$value['id']));
