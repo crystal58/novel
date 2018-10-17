@@ -151,7 +151,7 @@ class NovelController extends AbstractController{
                 $result = $novelModel->update(array("status" => NovelTmpModel::NOVEL_TMP_STATUS_READY),$where);
             }
             $classType = $this->get("class_type",1);
-            $this->redirect("/novel/subject?id=".$novelId."&class_type=".$classType);
+            $this->redirect("/novel/subject?id=".$novelId."&class_type=".$classType."&page=".$this->get("page"));
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }
