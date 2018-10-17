@@ -188,7 +188,8 @@ class ArticleController extends AbstractController{
                     $url = $webUrl = $this->getPost("url");
                     $classId = $this->getPost("class_id") ?:$this->getPost("first_class");
                     $page = $this->getPost("page");
-                    for ($i=1;$i<= $page; $i++) {
+                    $offset = $this->getPost("offset")?:1;
+                    for ($i=$offset;$i<= $page; $i++) {
                         if($i > 1) {
                             $url = $webUrl . "page".$i."/";
                         }
