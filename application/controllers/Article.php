@@ -277,8 +277,14 @@ class ArticleController extends AbstractController{
         preg_match_all($reg,$result[0],$urlRet);
         //var_dump($urlRet);exit;
 
+        $author = $this->getPost("author");
+        if($author){
+            $authorInfo = explode("_",$author);
+            $authorId = $authorInfo[0];
+            $authorName = $authorInfo[1];
+        }
         $novelTmpModel = new NovelTmpModel();
-        $count = $novelTmpModel->getCount(array("novel_id" => $classId,"class_type"=>2));
+        $count = $novelTmpModel->getCount(array("author_id" => $authorId,"class_type"=>2));
         $count = $count + 1;
         $subjectData = array();
         foreach ($urlRet[2] as $key=>$value){
@@ -296,12 +302,7 @@ class ArticleController extends AbstractController{
                 }
                 $subjectUrl = $scheme."://".$host.$path.$value;
             }
-            $author = $this->getPost("author");
-            if($author){
-                $authorInfo = explode("_",$author);
-                $authorId = $authorInfo[0];
-                $authorName = $authorInfo[1];
-            }
+
             $title = $urlRet[3][$key];
 
             $subjectData[] = array(
