@@ -270,7 +270,7 @@ class ArticleController extends AbstractController{
         if(empty($result)){
             throw new Exception("正则出错了");
         }
-        var_dump($result[0]);
+        //var_dump($result[0]);
         //$reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
         $reg = '/<li>([^：]*)：<a href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a><\/li>/is';
 
