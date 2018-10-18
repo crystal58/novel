@@ -146,45 +146,7 @@ class ArticleController extends AbstractController{
             if($request->isPost()){
                 $getDataType = $this->getPost("getdatatype");
                 $code = $this->get("code");
-//                if($getDataType == 1){
-//                    // echo $authorUrl."<br>";
-//                    $authorUrl = $this->getPost("author_url");
-//                    $authorData = file_get_contents($authorUrl);
-//
-//                    if($code != "UTF-8"){
-//                        $authorData = iconv($code,'UTF-8//IGNORE',$authorData);
-//                    }
-//                    //echo $authorData."<br>";
-//                    $authorRule = $this->getPost("author_rule");
-//                    preg_match("/$authorRule/isU", $authorData,$authorNovel);
-//                    //var_dump($authorNovel[1]);exit;
-//                    $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
-//                    preg_match_all($reg,$authorNovel[1],$authorUrlRet);
-//                    $authorInfo = explode("_",$this->getPost("author"));
-//                    $novelClass = explode("_",$this->getPost("novel_class"));
-//
-//                    foreach ($authorUrlRet[1] as $key=>$value){
-//                        $novel = array(
-//                            "name" => $authorUrlRet[2][$key],
-//                            "author_id" => $authorInfo[0],
-//                            "author_name"=> $authorInfo[1],
-//                            "content" => "",
-//                            "novel_class_id" => $novelClass[0],
-//                            "novel_class_name" => $novelClass[1],
-//                            "operator_id" => $this->_operatorId,
-//                            "create_time" => time(),
-//                            "update_time" => time(),
-//
-//                        );
-//                        $novelModel = new NovelModel();
-//                        $novelId = $novelModel->insert($novel);
-//                        $url = $value;
-//                        $this->caiJi($url,$novelId);
-//                        echo "采集目录成功，<a href='/novel/subject?id={$novelId}&class_type=2'>查看</a><br>";
-//                        // exit;
-//                    }
-//                    exit;
-//                }else{
+
                     $url = $webUrl = $this->getPost("url");
                     $classId = $this->getPost("class_id") ?:$this->getPost("first_class");
                     $page = $this->getPost("page");
@@ -202,9 +164,6 @@ class ArticleController extends AbstractController{
 
                     }
                     echo "采集目录成功，<a href='/novel/subject?id={$classId}&class_type=2'>查看</a>";
-                //}
-
-
             }
         }catch(Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
