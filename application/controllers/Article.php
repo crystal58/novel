@@ -116,12 +116,12 @@ class ArticleController extends AbstractController{
 
         try {
             $articleTypeModel = new ArticlesTypeModel();
-            $params = array(
-                "status" => ArticlesTypeModel::ARTICLE_CLASS_STATUS,
-            );
-            $typeData = $articleTypeModel->getList($params);
+//            $params = array(
+//                "status" => ArticlesTypeModel::ARTICLE_CLASS_STATUS,
+//            );
+            $typeData = $articleTypeModel->getAllClass();
             $typeList = $firstTypeList = array();
-            foreach ($typeData['list'] as $value){
+            foreach ($typeData as $value){
                 if($value['parent_id'] == 0){
                     $firstTypeList[] = $value;
                     continue;
@@ -255,9 +255,11 @@ class ArticleController extends AbstractController{
                 $authorId = $authorInfo[0];
                 $authorName = $authorInfo[1];
             }
+            $title = $urlRet[2][$key];
+
             $subjectData[] = array(
                 "novel_id" => $classId,
-                "title" => $urlRet[2][$key],
+                "title" => $title,
                 "url" => $subjectUrl,
                 "create_time" => time(),
                 "content_url" => json_encode(array("content"=>$content,"num"=>$this->getPost("content_num"))),

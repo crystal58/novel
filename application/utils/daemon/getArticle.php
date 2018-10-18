@@ -62,8 +62,8 @@ try{
 
         preg_match("#$rule#isU", $data, $contentRet);
         //var_dump($contentRet);exit;
-        $title = strip_tags($contentRet[2],"<p>");
-        $content = strip_tags($contentRet[4],"<p>");
+        $title = strip_tags($contentRet[2],"<p><br>");
+        $content = strip_tags($contentRet[4],"<p><br>");
 
         $description = isset($key['description']) ? strip_tags($contentRet[$key['description']],"<p>") : "";
         $translate = isset($key['translate']) ? strip_tags($contentRet[$key['translate']],"<p>") : "";

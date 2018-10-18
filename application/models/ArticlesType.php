@@ -45,9 +45,9 @@ class ArticlesTypeModel extends AbstractModel {
 
     public function getAllClass(){
         $param = array(
-            "AND" => array(
-                "status"=>self::ARTICLE_CLASS_STATUS
-            ),
+//            "AND" => array(
+//                "status"=>self::ARTICLE_CLASS_STATUS
+//            ),
             "ORDER" => array(
                 "id" => "DESC"
             )
