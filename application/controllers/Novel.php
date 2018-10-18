@@ -145,14 +145,20 @@ class NovelController extends AbstractController{
     public function subjectStatusAction(){
         try{
             $novelId = $this->get("id");
-            if($novelId > 0){
+            $authorId = $this->get("author_id");
+            if($novelId > 0 || $authorId>0){
                 $novelModel = new NovelTmpModel();
                 $where = array(
                     "AND" => array(
-                        "novel_id" => $novelId,
                         "status" => NovelTmpModel::NOVEL_TMP_STATUS_INIT
                     )
                 );
+                if($novelId >0){
+                    $where["AND"]['novel_id'] = $novelId;
+                }else if($authorId >0){
+                    $where['AND']['author_id'] = $authorId;
+                }
+
                 $tmpId = $this->get("tmp_id");
                 if($tmpId > 0){
                     $where['AND']['id'] = $tmpId;
