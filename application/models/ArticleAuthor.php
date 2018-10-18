@@ -51,9 +51,9 @@ class ArticleAuthorModel extends AbstractModel {
 
     public function getAllAuthor(){
         $param = array(
-            "AND" => array(
-                "status"=>self::AUTHOR_STATUS
-            ),
+//            "AND" => array(
+//                "status"=>self::AUTHOR_STATUS
+//            ),
             "ORDER" => array(
                 "id" => "DESC"
             )
