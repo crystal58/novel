@@ -193,7 +193,12 @@ class ArticleController extends AbstractController{
                         if($i > 1) {
                             $url = $webUrl . "page".$i."/";
                         }
-                        $this->caiJi($url,$classId);
+                        if($getDataType == 2){
+                            $this->caiJi($url,$classId);
+                        }else{
+                            $this->zhuticaiji($url,$classId);
+                        }
+
 
                     }
                     echo "采集目录成功，<a href='/novel/subject?id={$classId}&class_type=2'>查看</a>";
@@ -206,7 +211,9 @@ class ArticleController extends AbstractController{
         }
     }
 
-
+/*
+ * 古诗词名句 作者列表采集
+ */
 
     private function caiJi($url,$classId){
 
@@ -256,7 +263,6 @@ class ArticleController extends AbstractController{
                 $authorName = $authorInfo[1];
             }
             $title = $urlRet[2][$key];
-
             $subjectData[] = array(
                 "novel_id" => $classId,
                 "title" => $title,
@@ -271,10 +277,92 @@ class ArticleController extends AbstractController{
             );
            // echo json_encode($subjectData);exit;
             $count++;
-            if($count == 10)break;
+            //if($count == 10)break;
            // break;
         }
         //var_dump($subjectData);exit;
+        if(!empty($subjectData)){
+            $ret = $novelTmpModel->batchInsert($subjectData);
+        }
+    }
+
+    /**
+     * @param $url
+     * @param $classId
+     * @throws Exception
+     * 古诗词名句网 专题列表采集 唐诗三百首
+     */
+    private function zhuticaiji($url,$classId){
+
+        $content = $this->getPost("content");
+        $pathData = parse_url($url);
+
+        $data = \YC\Common::readfile($url);
+        $data = preg_replace('/\s[\s]+/', '', $data);
+
+
+        $postTitle = $this->getPost("title");
+        $code = $this->getPost("code");
+        if($code != "UTF-8"){
+            $data = iconv($code,'UTF-8//IGNORE',$data);
+        }
+
+        preg_match("/$postTitle/isU",$data,$result);
+        if(empty($result)){
+            throw new Exception("正则出错了");
+        }
+        var_dump($result[0]);
+        //$reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
+        $reg = '/<li>([^：]*)：<a href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a><\/li>/is';
+
+        preg_match_all($reg,$result[0],$urlRet);
+        //var_dump($urlRet);exit;
+
+        $novelTmpModel = new NovelTmpModel();
+        $count = $novelTmpModel->getCount(array("novel_id" => $classId,"class_type"=>2));
+        $count = $count + 1;
+        $subjectData = array();
+        foreach ($urlRet[2] as $key=>$value){
+
+            if(stripos($value,"http") === 0 || stripos($value,"https") === 0){
+                $subjectUrl = $value;
+            }else{
+                $host = isset($pathData['host']) ? $pathData['host'] : "";
+                $scheme = isset($pathData['scheme']) ? $pathData['scheme'] : "";
+                $path = "";
+                if(stripos($value,"/") !== 0){
+                    $pathArr = explode("/",$pathData['path']);
+                    unset($pathArr[count($pathArr)-1]);
+                    $path = "/".implode("/",$pathArr)."/";
+                }
+                $subjectUrl = $scheme."://".$host.$path.$value;
+            }
+            $author = $this->getPost("author");
+            if($author){
+                $authorInfo = explode("_",$author);
+                $authorId = $authorInfo[0];
+                $authorName = $authorInfo[1];
+            }
+            $title = $urlRet[3][$key];
+
+            $subjectData[] = array(
+                "novel_id" => $classId,
+                "title" => $title,
+                "url" => $subjectUrl,
+                "create_time" => time(),
+                "content_url" => json_encode(array("content"=>$content,"num"=>$this->getPost("content_num"))),
+                "order" => $count,
+                "code" => $code,
+                "class_type" => 2,
+                "author_id" => isset($authorId) ? $authorId : 0,
+                "author_name" => $urlRet[1][$key]
+            );
+            $count++;
+            //if($count == 10)break;
+            // break;
+        }
+
+       // var_dump($subjectData);exit;
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
         }

@@ -23,34 +23,12 @@
             </div>
             <div class="field">
                 <select id="getID" name="getdatatype" class="input w50">
-<!--                    <option value="1">按分类抓取</option>-->
                     <option value="2">按单篇抓取</option>
+                    <option value="1">按专题抓取</option>
                 </select>
             </div>
         </div>
-        <div id="get_author" style="display: none">
-        <div class="form-group">
-            <div class="label">
-                <label>采集URL：</label>
-            </div>
-            <div class="field">
-                <input type="text" class="input w50" name="author_url" value=""  />
-                <div class="tips"></div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="label">
-                <label>正则：</label>
-            </div>
-            <div class="field">
-                <input type="text" style="width: 90%" class="input w50" name="author_rule" value=""  />
-                <div class="tips"></div>
-            </div>
-        </div>
 
-
-
-        </div>
         <div class="form-group">
             <div class="label">
                 <label>作者：</label>
@@ -176,15 +154,7 @@
             $("#class_id").append('<option value="'+option.id+'">'+option.name+'</option>');
         }
     });
-    $("#getID").change(function () {
-        if($(this).val() == 1){
-            $("#get_author").show();
-            $("#get_one").hide();
-        }else{
-            $("#get_author").hide();
-            $("#get_one").show();
-        }
-    });
+
 </script>
 
 </body></html>
