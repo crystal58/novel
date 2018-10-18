@@ -155,8 +155,10 @@ class NovelController extends AbstractController{
                 );
                 if($novelId >0){
                     $where["AND"]['novel_id'] = $novelId;
+                    $urlParams = "id=".$authorId;
                 }else if($authorId >0){
                     $where['AND']['author_id'] = $authorId;
+                    $urlParams = "author_id=".$authorId;
                 }
 
                 $tmpId = $this->get("tmp_id");
@@ -166,7 +168,7 @@ class NovelController extends AbstractController{
                 $result = $novelModel->update(array("status" => NovelTmpModel::NOVEL_TMP_STATUS_READY),$where);
             }
             $classType = $this->get("class_type",1);
-            $this->redirect("/novel/subject?id=".$novelId."&class_type=".$classType."&page=".$this->get("page"));
+            $this->redirect("/novel/subject?".$urlParams."&class_type=".$classType."&page=".$this->get("page"));
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }
