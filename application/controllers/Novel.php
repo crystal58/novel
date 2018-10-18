@@ -114,7 +114,8 @@ class NovelController extends AbstractController{
         try{
             $id = $this->get("id");
             $classType = $this->get("class_type")?:1;
-            if($id <= 0){
+            $authorId = $this->get("author_id");
+            if($id <= 0 && $authorId <=0){
                 throw new Exception("参数错误（id={$id}）",400);
             }
             $page = (int)$this->get("page",1);
@@ -122,7 +123,15 @@ class NovelController extends AbstractController{
             $offset = ($page-1) * self::PAGESIZE;
 
             $novelModel = new NovelTmpModel();
-            $result = $novelModel->getList(array("novel_id" => (int)$id,"class_type"=>$classType),$offset,self::PAGESIZE,true);
+            $params = array(
+                "class_type"=>$classType
+            );
+            if($id > 0){
+                $params['novel_id'] = $id;
+            }else if($authorId >0){
+                $params['author_id'] = $authorId;
+            }
+            $result = $novelModel->getList($params,$offset,self::PAGESIZE,true);
             $this->_view->list = $result['list'];
             $ph = new \YC\Page($result['cnt'],$page,self::PAGESIZE);
             //echo json_encode(array($result,$page,self::PAGESIZE));
