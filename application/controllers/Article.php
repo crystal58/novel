@@ -196,10 +196,25 @@ class ArticleController extends AbstractController{
         $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
         preg_match_all($reg,$result[0],$urlRet);
 
+        $author = $this->getPost("author");
+        if($author){
+            $authorInfo = explode("_",$author);
+            $authorId = $authorInfo[0];
+            $authorName = $authorInfo[1];
+        }
+
         $novelTmpModel = new NovelTmpModel();
-        $count = $novelTmpModel->getCount(array("novel_id" => $classId));
+        $params = array(
+            "novel_id" => $classId,
+            "class_type" => 2
+        );
+        if(isset($authorId) && $authorId >0){
+            $params['author_id'] = $authorId;
+        }
+        $count = $novelTmpModel->getCount($params);
         $count = $count + 1;
         $subjectData = array();
+
         foreach ($urlRet[1] as $key=>$value){
 
             if(stripos($value,"http") === 0 || stripos($value,"https") === 0){
@@ -215,12 +230,8 @@ class ArticleController extends AbstractController{
                 }
                 $subjectUrl = $scheme."://".$host.$path.$value;
             }
-            $author = $this->getPost("author");
-            if($author){
-                $authorInfo = explode("_",$author);
-                $authorId = $authorInfo[0];
-                $authorName = $authorInfo[1];
-            }
+
+
             $title = $urlRet[2][$key];
             $subjectData[] = array(
                 "novel_id" => $classId,
