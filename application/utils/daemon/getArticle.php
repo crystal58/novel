@@ -16,7 +16,7 @@ try{
             "status" => 1,
             "class_type" => 2
         ),
-        "LIMIT" => array(0,50)
+        "LIMIT" => array(0,100)
     );
     $list = $novelTmp->fetchAll($where);
     foreach ($list as $value){
