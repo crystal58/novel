@@ -72,6 +72,7 @@
             <th>ID</th>
             <th>作者名称</th>
             <th>作者类别</th>
+            <th>作者状态</th>
             <th>创建时间</th>
             <th>操作</th>
         </tr>
@@ -80,10 +81,11 @@
                 <td><?=$value['id']?></td>
                 <td><?=$value['author_name']?></td>
                 <td><?=isset($this->article_type[$value['class_type_id']])?$this->article_type[$value['class_type_id']]['name']:"未定义"?></td>
+                <td><?=$value['status'] == ArticleAuthorModel::AUTHOR_STATUS?"正常":"冻结"?></td>
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-class_type_id="<?=$value['class_type_id']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
+                        <a class="button edit_button" data-status="<?=$value['status']?>" data-class_type_id="<?=$value['class_type_id']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
                         <a class="button" href="/novel/subject?author_id=<?=$value['id']?>&class_type=2">临时目录</a>
                      </div>
                 </td>
@@ -105,6 +107,7 @@
             $("#description").val($(this).data("description"));
             $("#author_pic").attr("src",$(this).data("pic"));
             $("#class_type_id").val($(this).data("class_type_id"));
+            $("#author_status").val($(this).data("status"));
             $("#edit_window").show();
         }
     );
