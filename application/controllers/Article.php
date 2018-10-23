@@ -194,6 +194,8 @@ class ArticleController extends AbstractController{
             throw new Exception("正则出错了");
         }
         $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
+
+        $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》<a\s.*?href="\/shiren\/songchao\/">宋朝<\/a><span>·<\/span><a class="author" href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a/is';
         preg_match_all($reg,$result[0],$urlRet);
 
         $author = $this->getPost("author");
@@ -202,6 +204,7 @@ class ArticleController extends AbstractController{
             $authorId = $authorInfo[0];
             $authorName = $authorInfo[1];
         }
+
 
         $novelTmpModel = new NovelTmpModel();
         $params = array(
@@ -230,7 +233,9 @@ class ArticleController extends AbstractController{
                 }
                 $subjectUrl = $scheme."://".$host.$path.$value;
             }
-
+            if(isset($urlRet[4])){
+                $authorName = $urlRet[4][$key];
+            }
 
             $title = $urlRet[2][$key];
             $subjectData[] = array(
@@ -250,7 +255,6 @@ class ArticleController extends AbstractController{
             //if($count == 10)break;
            // break;
         }
-        //var_dump($subjectData);exit;
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
         }

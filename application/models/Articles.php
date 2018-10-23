@@ -46,4 +46,6 @@ class ArticlesModel extends AbstractModel {
     }
 
 
+
+
 }

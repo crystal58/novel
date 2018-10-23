@@ -61,4 +61,19 @@ class ArticleAuthorModel extends AbstractModel {
         return $this->fetchAll($param);
     }
 
+    public function getAuthorsbyIds($ids){
+        if(empty($ids)) return false;
+        if(!is_array($ids) && $ids > 0){
+            $ids = array($ids);
+        }
+        $params = array(
+            "AND" => array(
+                "id" => $ids,
+                "status" => self::AUTHOR_STATUS
+            )
+
+        );
+        return $this->fetchAll($params,array("id","pic","description","author_name"));
+    }
+
 }

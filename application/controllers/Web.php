@@ -45,6 +45,9 @@ class WebController extends AbstractController{
             $xiaoshuoData = $keyValuesModel->fetchRow(array("keys"=>"recommend_".NovelModel::$_novel_class_pinxie[$type]));
             $this->_view->xiaoshuo_list = $xiaoshuo = $xiaoshuoData ? json_decode($xiaoshuoData['value'],true) :array();
 
+            $articleType = $this->get("article_type")?:1;
+            $wenxueData = $keyValuesModel->fetchRow(array("keys"=>"recommend_".ArticlesTypeModel::$article_type_pinyin[$articleType]));
+            $this->_view->wenxue_list =$wenxue = $wenxueData ? json_decode($wenxueData['value'],true):array();
 //            $wuxiaData = $keyValuesModel->fetchRow(array("keys" => "recommend_wuxia"));
 //            $yanqingData = $keyValuesModel->fetchRow(array("keys" => "recommend_yanqing"));
 //
@@ -55,7 +58,13 @@ class WebController extends AbstractController{
                 $xiaoshuoId[] = $value['id'];
             }
 
+            $wenxueId = array();
+            foreach ($wenxue as $value){
+                $wenxueId[] = $value['id'];
+            }
+
             $this->_view->xiaoshuo_id = implode(",",$xiaoshuoId);
+            $this->_view->wenxue_id = implode(",",$wenxueId);
 
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
@@ -94,6 +103,81 @@ class WebController extends AbstractController{
             $params = array(
                 "keys" => "recommend_".NovelModel::$_novel_class_pinxie[$type],
                 "value" => json_encode($novelList)
+            );
+            $keyValuesModel->replaceKeys($params);
+            $result = array(
+                "code" => 200,
+            );
+        }catch (Exception $e){
+            $result = array(
+                "code" => $e->getCode(),
+                "msg" => $e->getMessage()
+            );
+        }
+
+        $this->renderJson($result);
+    }
+
+    /**
+     * 预览
+     */
+    public function articlerecomendAction(){
+        try {
+            $authorIdStr = $this->get("id");
+            $authorList = array();
+            if (!empty($authorIdStr)) {
+                $ids = explode(",", $authorIdStr);
+                $articleModel = new ArticleAuthorModel();
+                $authorList = $articleModel->getAuthorsbyIds($ids);
+                foreach ($authorList as &$value){
+                    $value['pic'] = \YC\Common::getUrl($value['pic']);
+                }
+            }
+            $result = array(
+                "code" => 200,
+                "result" => $authorList
+            );
+        }catch (Exception $e){
+            $result = array(
+                "code" => $e->getCode(),
+                "msg" => $e->getMessage()
+            );
+        }
+
+        $this->renderJson($result);
+    }
+
+    public function articlerecomendpostAction(){
+        try {
+            $authorIdStr = $this->get("id");
+            $type = $this->get("article_type");
+            if(!isset(ArticlesTypeModel::$ArticleType[$type])){
+                throw new Exception("参数错误");
+            }
+            $authorList = array();
+            if (!empty($authorIdStr)) {
+                $ids = explode(",", $authorIdStr);
+                $articleAuthorModel = new ArticleAuthorModel();
+                $authorData = $articleAuthorModel->getAuthorsbyIds($ids);
+
+                foreach ($authorData as $value){
+                    $authorTmp[$value['id']] = array(
+                        "author_name" => $value['author_name'],
+                        "pic" =>  \YC\Common::getUrl($value['pic']),
+                        "id" => $value['id']
+                    );
+                }
+                foreach ($ids as $value){
+                    if(isset($authorTmp[$value])) {
+                        $authorList[] = $authorTmp[$value];
+                    }
+                }
+            }
+
+            $keyValuesModel = new keyValuesModel();
+            $params = array(
+                "keys" => "recommend_".ArticlesTypeModel::$article_type_pinyin[$type],
+                "value" => json_encode($authorList)
             );
             $keyValuesModel->replaceKeys($params);
             $result = array(

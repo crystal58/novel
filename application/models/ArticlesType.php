@@ -6,7 +6,20 @@ class ArticlesTypeModel extends AbstractModel {
 
     protected $_table = "article_type";
     protected $_database = "account";
-    protected $_primary = "id"; 
+    protected $_primary = "id";
+
+    const ARTICLE_TYPE_TANG = 1;
+    const ARTICLE_TYPE_SONG = 2;
+
+    public static $ArticleType = array(
+        self::ARTICLE_TYPE_TANG => "隋唐",
+        self::ARTICLE_TYPE_SONG=>"宋元"
+    );
+    public static $article_type_pinyin = array(
+        self::ARTICLE_TYPE_TANG =>"tang",
+        self::ARTICLE_TYPE_SONG => "song",
+
+    );
 
 
 

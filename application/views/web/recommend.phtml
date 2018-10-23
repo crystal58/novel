@@ -55,6 +55,46 @@
             <?php }?>
       </div>
   </div>
+    <hr>
+    <div class="body-content">
+        <div class="form-group">
+            <div class="label" style="width: 80px;">
+                <label>文学类型</label>
+            </div>
+            <div class="field">
+                <div class="field">
+                    <select name="article_class" id="article_class" class="input w50" onchange="location.href='/web/recommend?article_type='+this.value">
+                        <?php
+                        $type = isset($_GET['article_type'])?$_GET['article_type']:1;
+                        foreach (ArticlesTypeModel::$ArticleType as $key=>$value){ ?>
+                            <option value="<?=$key?>" <?=$type==$key?"selected":""?>><?=$value?></option>
+                        <?php }?>
+                    </select>
+                </div>
+            </div>
+            <div class="label"></div>
+        </div><br>
+        <div class="form-group">
+            <div class="label">
+                <label>文学ID：</label>
+            </div>
+            <div class="field">
+                <input type="text" class="input w50" value="<?=$this->wenxue_id?>" id="wenxue_id" />
+                <div class="tips"></div>
+                <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wenxue_button" type="button"> 预览</button>
+                <button class="button bg-main icon-check-square-o" data-type="wuxia" id="wenxue_submit_button" type="button"> 提交</button>
+            </div>
+        </div>
+        <div id="wenxue_list">
+            <?php foreach ($this->wenxue_list as $value){?>
+                <div>
+                    <span><?=$value['id']?>.</span>
+                    <span><img src="<?=$value['pic']?>" width="30" height="30"></span>
+                    <span><?=$value['author_name']?></span>
+                </div>
+            <?php }?>
+        </div>
+    </div>
 </div>
 <script>
     $("#xiaoshuo_button").click(function () {
@@ -89,6 +129,48 @@
         var novel_type = $("#novel_class").val();
         $.ajax({
             url: "/web/novelrecomendpost?id=" +$("#xiaoshuo_id").val()+"&type="+novel_type,
+            type: "get",
+            success: function(data) {
+                if(data.code == 200){
+                    alert("success");
+                }else{
+                    alert(data.msg);
+                }
+
+            }
+        });
+    });
+    $("#wenxue_button").click(function () {
+        var article_type = $("#article_class").val();
+        $.ajax({
+            url: "/web/articlerecomend?id=" +$("#wenxue_id").val()+"&article_type="+article_type,
+            type: "get",
+            success: function(data) {
+                if(data.code == 200){
+                    var html = "";
+                    var ret = data.result;
+                    var img = "";
+                    for (var key in ret){
+                        html += "<div>"
+                            + "<span>"+ret[key].id+".</span>"
+                            + "<span><img src='"+ret[key].pic+"' width='30' height='30'></span>"
+                            + "<span>"+ret[key].author_name+"</span>"
+                            + "</div>";
+                    }
+                    $("#wenxue_list").html(html);
+
+                }else{
+                    alert(data.msg);
+                }
+
+            }
+        });
+    });
+
+    $("#wenxue_submit_button").click(function () {
+        var wenxue_type = $("#article_class").val();
+        $.ajax({
+            url: "/web/articlerecomendpost?id=" +$("#wenxue_id").val()+"&article_type="+wenxue_type,
             type: "get",
             success: function(data) {
                 if(data.code == 200){
