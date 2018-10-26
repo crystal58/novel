@@ -13,7 +13,11 @@
 </head>
 <body>
 <div class="panel admin-panel margin-top" id="add">
-  <div class="panel-head"><input type="button" value="添加作者" id="add_button"></div>
+  <div class="panel-head">
+      <input type="button" value="添加作者" id="add_button">
+      <input type="button" value="冻结"  onclick="$('#post_type').val('status_0');$('#all_post').submit()">
+      <input type="button" value="解冻"  onclick="$('#post_type').val('status_1');$('#all_post').submit()">
+  </div>
   <div class="body-content" style="display: none"  id="edit_window">
     <form method="post" class="form-x" action="/article/postauthor" enctype="multipart/form-data">
       <div class="form-group" >
@@ -56,7 +60,7 @@
           <div class="field">
               <select name="author_status" id="author_status">
                   <option value="<?=ArticleAuthorModel::AUTHOR_STATUS?>">正常</option>
-                  <option value="<?=ArticleAuthorModel::AUTHOR_STATUS_DEL?>">删除</option>
+                  <option value="<?=ArticleAuthorModel::AUTHOR_STATUS_DEL?>">冻结</option>
               </select>
           </div>
           <input type="hidden" value="" name="author_id" id="author_id">
@@ -67,8 +71,11 @@
 </div>
 <div class="panel admin-panel">
     <div class="panel-head"><strong class="icon-reorder"> 作者管理</strong></div>
+    <form action="/article/postArticleAuthor" method="post" id="all_post">
+        <input type="hidden" name="post_type" id="post_type" value="status_1">
     <table class="table table-hover text-center">
         <tr>
+            <th><input type="checkbox" id="selectAll"></th>
             <th>ID</th>
             <th>作者名称</th>
             <th>作者类别</th>
@@ -78,6 +85,7 @@
         </tr>
         <?php foreach($list as $value){ ?>
             <tr>
+                <td><input type="checkbox" name="author_ids[]" value="<?=$value['id']?>"></td>
                 <td><?=$value['id']?></td>
                 <td><?=$value['author_name']?></td>
                 <td><?=isset($this->article_type[$value['class_type_id']])?$this->article_type[$value['class_type_id']]['name']:"未定义"?></td>
@@ -97,8 +105,16 @@
             </td>
         </tr>
     </table>
+    </form>
 </div>
 <script>
+    $("#selectAll").click(function () {
+        if(this.checked) {
+            $("input[name='author_ids[]']").attr('checked',true);
+        }else {
+            $("input[name='author_ids[]']").attr('checked',false);
+        }
+    });
     $(".edit_button").click(
         function () {
             var author_id = $(this).data("author_id");
@@ -106,7 +122,7 @@
             $("#name").val($(this).data("author_name"));
             $("#description").val($(this).data("description"));
             $("#author_pic").attr("src",$(this).data("pic"));
-            $("#class_type_id").val($(this).data("class_type_id"));
+            $("#novel_class_id").val($(this).data("class_type_id"));
             $("#author_status").val($(this).data("status"));
             $("#edit_window").show();
         }

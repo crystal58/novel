@@ -401,7 +401,7 @@ class ArticleController extends AbstractController{
                 if(!$return){
                     throw new Exception("操作失败");
                 }
-                $this->redirect("/article/author");
+                $this->redirect("/article/author?page=".$this->get("page",1));
             }
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
@@ -535,6 +535,28 @@ class ArticleController extends AbstractController{
 
         }
 
+    }
+
+    public function  postarticleauthorAction(){
+        try{
+            $type = $this->getPost("post_type");
+            $ids = $this->getPost("author_ids");
+            $authorModel = new ArticleAuthorModel();
+            $typeValue = explode("_",$type);
+            if($typeValue[0] == "status"){
+                $value = $typeValue[1];
+                if(count($ids) > 0){
+                    $params = array(
+                        "id" => $ids
+                    );
+                    $authorModel->update(array("status" => $value),$params);
+                }
+            }
+
+            $this->redirect("/article/author?page=".$this->get("page",1));
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
     }
 
 }
