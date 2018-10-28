@@ -155,7 +155,7 @@ class NovelController extends AbstractController{
                 );
                 if($novelId >0){
                     $where["AND"]['novel_id'] = $novelId;
-                    $urlParams = "id=".$authorId;
+                    $urlParams = "id=".$novelId;
                 }else if($authorId >0){
                     $where['AND']['author_id'] = $authorId;
                     $urlParams = "author_id=".$authorId;
