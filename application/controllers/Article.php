@@ -195,7 +195,7 @@ class ArticleController extends AbstractController{
         }
         $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
 
-        $reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》<a\s.*?href="\/shiren\/songchao\/">宋朝<\/a><span>·<\/span><a class="author" href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a/is';
+        //$reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》<a\s.*?href="\/shiren\/songchao\/">元朝<\/a><span>·<\/span><a class="author" href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a/is';
         preg_match_all($reg,$result[0],$urlRet);
 
         $author = $this->getPost("author");
