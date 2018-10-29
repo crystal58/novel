@@ -16,10 +16,14 @@ class NovelController extends AbstractController{
             $novelModel = new NovelModel();
             $params = array();
             $authorId = $this->get("author_id");
+            $order = array();
             if($authorId > 0){
                 $params['author_id'] = $authorId;
+                $order = array(
+                    "record_status" => "ASC"
+                );
             }
-            $result = $novelModel->novelList($params, $offset, self::PAGESIZE, true);
+            $result = $novelModel->novelList($params, $offset, self::PAGESIZE, $order,true);
             $this->_view->novel_list = $result['list'];
 
             $ph = new \YC\Page($result['cnt'], $page, self::PAGESIZE);
