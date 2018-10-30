@@ -45,21 +45,26 @@ class Page{
 
         for($i = 1;$i<= $num ; $i++){
 
-            if($i == $this->_curPage){
-                $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
-                continue;
-            }
-
-
             if($this->_totalPage <= $num){
-                $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";
-                continue;
-            }
+                if($i == $this->_curPage){
+                    $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
+                    continue;
+                }else{
+                    $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";
+                    continue;
+                }
 
+            }
 
             if($this->_curPage <= 5){
-                $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";
-                continue;
+                if($i == $this->_curPage){
+                    $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
+                    continue;
+                }else{
+                    $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";
+                    continue;
+                }
+
             }else{
                 if($i < 6){
                     $p = $this->_curPage - (6-$i);
