@@ -44,6 +44,7 @@ class Page{
         $num = $this->_totalPage > $this->_showPage ? $this->_showPage :$this->_totalPage;
 
         for($i = 1;$i<= $num ; $i++){
+
             if($i == $this->_curPage){
                 $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
                 continue;
@@ -55,19 +56,24 @@ class Page{
                 continue;
             }
 
+
             if($this->_curPage <= 5){
                 $pageHtml .= "<a href='".$this->_url."&page=".$i."'>".$i."</a>";
                 continue;
             }else{
                 if($i < 6){
                     $p = $this->_curPage - (6-$i);
-                    $pageHtml .= "<a href='".$this->_url."&page=".$p."'>".$p."</a>";
+                    $pHtml = "<a href='".$this->_url."&page=".$p."'>".$p."</a>";
                 }else if($i > 6){
                     $p = $this->_curPage + ($i-6);
-                    $pageHtml .= "<a href='".$this->_url."&page=".$p."'>".$p."</a>";
+                    $pHtml = "<a href='".$this->_url."&page=".$p."'>".$p."</a>";
                 }else{
-                    $pageHtml .= "<span class=\"current\">".$this->_curPage."</span>";
+                    $pHtml = "<span class=\"current\">".$this->_curPage."</span>";
                 }
+                if($p >= $this->_totalPage){
+                    break;
+                }
+                $pageHtml .= $pHtml;
             }
         }
         if($this->_curPage != $this->_totalPage){
