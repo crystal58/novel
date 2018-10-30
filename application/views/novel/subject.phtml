@@ -109,7 +109,7 @@
                 <td>
                     <div class="button-group">
                         <a class="button edit_button" data-novel_id="<?=$value['novel_id']?>" data-status="<?=$value['status']?>"  data-id="<?=$value['id']?>"  data-title="<?=$value['title']?>" data-url="<?=$value['url']?>" data-order="<?=$value['order']?>" data-code="<?=$value['code']?>">编辑</a>
-                        <a class="button" href="/novel/subjectStatus?id=<?=$value['novel_id']?>&tmp_id=<?=$value['id']?>&class_type=<?=$_GET['class_type']?>&page=<?=isset($_GET['page'])?$_GET['page']:1?>">就绪</a>
+                        <a class="button" href="/novel/subjectStatus?id=<?=$value['novel_id']?>&tmp_id=<?=$value['id']?>&class_type=<?=isset($_GET['class_type'])?$_GET['class_type']:1?>&page=<?=isset($_GET['page'])?$_GET['page']:1?>">就绪</a>
                     </div>
                 </td>
             </tr>
