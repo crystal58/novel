@@ -134,7 +134,7 @@
             <span>作者：</span>
             <select name="author_id">
                 <?php foreach ($this->author_list as $value){ ?>
-                    <option value="<?=$value['id']."_".$value['author_name']?>"><?=$value['author_name']?></option>
+                    <option value="<?=$value['id']."_".$value['author_name']?>" <?=(isset($this->author_id) && $this->author_id==$value['id'])?"selected":""?>><?=$value['author_name']?></option>
                 <?php }?>
             </select>
             <input type="submit" value="搜索">

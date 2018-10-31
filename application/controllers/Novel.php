@@ -22,6 +22,7 @@ class NovelController extends AbstractController{
                 $order = array(
                     "record_status" => "ASC"
                 );
+                $this->_view->author_id = $authorId;
             }
             $result = $novelModel->novelList($params, $offset, self::PAGESIZE, $order,true);
             $this->_view->novel_list = $result['list'];
