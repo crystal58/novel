@@ -83,7 +83,7 @@ class NovelController extends AbstractController{
                 if(!$return){
                     throw new Exception("操作失败");
                 }
-                $this->redirect("/novel/list");
+                $this->redirect("/novel/list?author_id=".$author);
             }
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
