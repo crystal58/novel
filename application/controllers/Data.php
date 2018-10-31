@@ -151,8 +151,18 @@ class DataController extends AbstractController{
         if(empty($result)){
             throw new Exception("正则出错了");
         }
+        preg_match('/<p>(.*)<\/p>/isU',$data,$retContent);
+        if($retContent){
+            $novelContent = $retContent[1];
+            $novelModel = new NovelModel();
+            $novelModel->update(array("content"=>$novelContent),array("id" =>$novelId));
+        }else{
+            throw new Exception("简介正则出错了");
+        }
+
         $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
         preg_match_all($reg,$result[0],$urlRet);
+
 
         $novelTmpModel = new NovelTmpModel();
         $count = $novelTmpModel->getCount(array("novel_id" => $novelId));
