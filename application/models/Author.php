@@ -1,6 +1,7 @@
 <?php
 class AuthorModel extends AbstractModel {
     const AUTHOR_STATUS = 1;     //正常
+    const AUTHOR_STATUS_LIMIT = 2;
     const AUTHOR_STATUS_DEL = -1; //删除
 
     protected $_table = "author";

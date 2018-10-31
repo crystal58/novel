@@ -11,7 +11,7 @@ class AuthorController extends AbstractController{
             $page = ((int)$this->get("page", 1)) > 0 ? (int)$this->get("page", 1) : 1;
             $offset = ($page - 1) * self::PAGESIZE;
             $authorModel = new AuthorModel();
-            $result = $authorModel->getList(array('status' => 1), $offset, self::PAGESIZE, true);
+            $result = $authorModel->getList(array('status[>]' => 0), $offset, self::PAGESIZE, true);
             $ph = new \YC\Page($result['cnt'], $page, self::PAGESIZE);
             $this->_view->pageHtml = $ph->getPageHtml();
            // $result['list'] = array();

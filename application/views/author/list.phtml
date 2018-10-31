@@ -50,6 +50,16 @@
               <input type="text" class="input w50" value="" id="description" name="description" data-validate="required:请输入作者简介" />
               <div class="tips"></div>
           </div>
+          <div class="label">
+              <label>作者状态：</label>
+          </div>
+          <div class="field">
+              <select name="author_status" id="author_status">
+                  <option value="<?=AuthorModel::AUTHOR_STATUS?>">正常</option>
+                  <option value="<?=AuthorModel::AUTHOR_STATUS_LIMIT?>">冻结</option>
+                  <option value="<?=AuthorModel::AUTHOR_STATUS_DEL?>">删除</option>
+              </select>
+          </div>
           <input type="hidden" value="" name="author_id" id="author_id">
           <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
       </div>
@@ -74,7 +84,7 @@
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
-                        <a class="button edit_button" data-novel_class_id="<?=$value['novel_class_id']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
+                        <a class="button edit_button" data-author_status="<?=$value['status']?>" data-novel_class_id="<?=$value['novel_class_id']?>" data-pic="<?=\YC\Common::getUrl($value['pic'])?>" data-author_id="<?=$value['id']?>" data-author_name="<?=$value['author_name']?>" data-description="<?=$value['description']?>">编辑</a>
                         <a href="/author/del?author_id=<?=$value['id']?>"  data-author_name="<?=$value['author_name']?>" class="button del_button"> 删除</a>
                     </div>
                 </td>
@@ -96,6 +106,7 @@
             $("#description").val($(this).data("description"));
             $("#author_pic").attr("src",$(this).data("pic"));
             $("#novel_class_id").val($(this).data("novel_class_id"));
+            $("#author_status").val($(this).data("author_status"))
             $("#edit_window").show();
         }
     );
