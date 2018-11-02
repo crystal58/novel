@@ -72,8 +72,9 @@ class DataController extends AbstractController{
             $request = $this->getRequest();
             if($request->isPost()){
                 $authorUrl = $this->getPost("author_url");
-                $code = $this->get("code");
-                if(!empty($authorUrl)){
+                $code = $this->getPost("code");
+                $type = $this->getPost("gettype");
+                if($type == 1){
                    // echo $authorUrl."<br>";
                     $authorData = file_get_contents($authorUrl);
 
@@ -105,7 +106,7 @@ class DataController extends AbstractController{
                         $novelModel = new NovelModel();
                         $novelId = $novelModel->insert($novel);
                         $url = $value;
-                        $this->caiJi($url,$novelId);
+                        $this->caiJi($url,$novelId,$type);
                         echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a><br>";
                        // exit;
                     }
@@ -113,7 +114,7 @@ class DataController extends AbstractController{
                 }else{
                     $url = $this->getPost("url");
                     $novelId = $this->getPost("novel_id");
-                    $this->caiJi($url,$novelId);
+                    $this->caiJi($url,$novelId,$type);
                     echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a>";
                 }
 
@@ -126,7 +127,7 @@ class DataController extends AbstractController{
         }
     }
 
-    private function caiJi($url,$novelId){
+    private function caiJi($url,$novelId,$type){
 
 
         $content = $this->getPost("content");
@@ -152,12 +153,14 @@ class DataController extends AbstractController{
             throw new Exception("正则出错了");
         }
         preg_match('/<p>(.*)<\/p>/isU',$data,$retContent);
-        if($retContent){
-            $novelContent = $retContent[1];
-            $novelModel = new NovelModel();
-            $novelModel->update(array("content"=>$novelContent),array("id" =>$novelId));
-        }else{
-            throw new Exception("简介正则出错了");
+        if ($type == 1){
+            if($retContent){
+                $novelContent = $retContent[1];
+                $novelModel = new NovelModel();
+                $novelModel->update(array("content"=>$novelContent),array("id" =>$novelId));
+            }else{
+                throw new Exception("简介正则出错了");
+            }
         }
 
         $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
