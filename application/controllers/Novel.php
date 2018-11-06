@@ -75,7 +75,7 @@ class NovelController extends AbstractController{
                 $imgInfo = $_FILES['img'];
                 if($_FILES['img']['name']){
                     $file = new \YC\File\upFile();
-                    $fileId = $file->store($imgInfo);
+                    $fileId = $file->store($imgInfo,true);
                     $params['pic'] = $fileId;
                 }
                 $novelModel = new NovelModel();

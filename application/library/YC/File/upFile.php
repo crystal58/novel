@@ -26,11 +26,17 @@ class upFile{
         $this->_file = new fastDfsUpload();
 
     }
-    public function store($file){
+    public function store($file,$waterMark = false){
         $this->_checkType($file);
         $suffix = $this->_getFileSuffix($file['name']);
-        return $this->_file->store($file['tmp_name'],$suffix);
+        if($waterMark) {
+            $file['tmp_name'] = $this->_setWaterMark($file['tmp_name']);
+        }
+
+        $result = $this->_file->store($file['tmp_name'],$suffix);
+        return $result;
     }
+
 
     public function get($file){
         if(!$file)return "";
@@ -118,4 +124,37 @@ class upFile{
         return $suffix;
     }
 
+    private function _setWaterMark($file,$waterTxt = "文学星空 eeeaaa.cn"){
+        //创建图片的实例
+        $dst = imagecreatefromstring(file_get_contents($file));
+        list($dst_w, $dst_h, $dst_type) = getimagesize($file);
+
+        //打上文字
+        $font = APPLICATION_PATH.'public/fonts/font.ttf';//字体
+        $black = imagecolorallocate($dst, 0xdc, 0x14, 0x3c);//字体颜色
+        imagefttext($dst, 16, 5, 20, $dst_h-$dst_h/6, $black, $font, $waterTxt);
+
+        //输出图片
+
+        switch ($dst_type) {
+            case 1://GIF
+                //header('Content-Type: image/gif');
+                imagegif($dst,$file);
+                break;
+            case 2://JPG
+               // echo 3333;exit;
+                //header('Content-Type: image/jpeg');
+                imagejpeg($dst,$file);
+                break;
+            case 3://PNG
+                //header('Content-Type: image/png');
+                imagepng($dst,$file);
+                break;
+            default:
+                break;
+        }
+
+        imagedestroy($dst);
+        return $file;
+    }
 }
