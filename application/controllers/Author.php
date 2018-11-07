@@ -8,14 +8,25 @@ class AuthorController extends AbstractController{
     public function listAction(){
 
         try {
+            $authorType = $this->get("novel_class_id");
+            $authorName = $this->get("author_name");
             $page = ((int)$this->get("page", 1)) > 0 ? (int)$this->get("page", 1) : 1;
             $offset = ($page - 1) * self::PAGESIZE;
             $authorModel = new AuthorModel();
-            $result = $authorModel->getList(array('status[>]' => 0), $offset, self::PAGESIZE, true);
+            $param = array(
+                'status[>]' => 0
+            );
+            if($authorType){
+                $param['novel_class_id'] = $authorType;
+            }
+            if($authorName){
+                $param['author_name[~]'] = "%".$authorName."%";
+            }
+            $result = $authorModel->getList($param, $offset, self::PAGESIZE, true);
             $ph = new \YC\Page($result['cnt'], $page, self::PAGESIZE);
             $this->_view->pageHtml = $ph->getPageHtml();
-           // $result['list'] = array();
             $this->_view->list = $result['list'];
+            $this->_view->author_type = $authorType;
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }

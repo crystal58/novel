@@ -60,6 +60,13 @@
                   <option value="<?=AuthorModel::AUTHOR_STATUS_DEL?>">删除</option>
               </select>
           </div>
+          <div class="label">
+              <label>作者顺序：</label>
+          </div>
+          <div class="field">
+              <input type="text" class="input w50" value="" id="order" name="order" data-validate="required:请输入作者姓名" />
+              <div class="tips"></div>
+          </div>
           <input type="hidden" value="" name="author_id" id="author_id">
           <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
       </div>
@@ -68,12 +75,31 @@
 </div>
 <div class="panel admin-panel">
     <div class="panel-head"><strong class="icon-reorder"> 作者管理</strong></div>
+    <div style="padding-left: 50px;text-align: center;">
+        <form action="/author/list" method="get">
+            <span>
+                <label>作者类别：</label>
+            </span>
+            <select name="novel_class_id" id="novel_class_id" class="">
+                <option value=""></option>
+                <?php foreach (NovelModel::$_novel_class_type as $key=>$value){ ?>
+                    <option value="<?=$key?>" <?=$this->author_type==$key?"selected":""?> ><?=$value?></option>
+                <?php } ?>
+            </select>
+            <span>作者名称：</span>
+            <input type="text" name="author_name" id="author_name" value="<?=isset($_GET['author_name'])?$_GET['author_name']:''?>">
+            <input type="submit" value="搜索">
+
+        </form>
+    </div>
+    <hr>
     <table class="table table-hover text-center">
         <tr>
             <th>ID</th>
             <th>作者名称</th>
             <th>作者类别</th>
             <th>作者状态</th>
+            <th>创建顺序</th>
             <th>创建时间</th>
             <th>操作</th>
         </tr>
@@ -83,6 +109,7 @@
                 <td><?=$value['author_name']?></td>
                 <td><?=isset(NovelModel::$_novel_class_type[$value['novel_class_id']])?NovelModel::$_novel_class_type[$value['novel_class_id']]:"未定义"?></td>
                 <td><?=$value['status']==AuthorModel::AUTHOR_STATUS?"正常":"冻结"?></td>
+                <td><?=$value['order']?></td>
                 <td><?=date("Y-m-d H:i:s",$value['create_time'])?></td>
                 <td>
                     <div class="button-group">
