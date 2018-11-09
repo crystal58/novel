@@ -19,7 +19,7 @@ class AuthorModel extends AbstractModel {
         if($authorId > 0){
             return $this->update($data,array("id"=>$authorId));
         }
-        $data['order'] = 9999999;
+
         return $this->insert($data);
     }
 

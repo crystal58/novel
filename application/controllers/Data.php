@@ -89,7 +89,7 @@ class DataController extends AbstractController{
                     preg_match_all($reg,$authorNovel[1],$authorUrlRet);
                     $authorInfo = explode("_",$this->getPost("author"));
                     $novelClass = explode("_",$this->getPost("novel_class"));
-
+                    $pathData = parse_url($authorUrl);
                     foreach ($authorUrlRet[1] as $key=>$value){
                         $novel = array(
                             "name" => $authorUrlRet[2][$key],
@@ -105,7 +105,19 @@ class DataController extends AbstractController{
                         );
                         $novelModel = new NovelModel();
                         $novelId = $novelModel->insert($novel);
-                        $url = $value;
+                        if(stripos($value,"http") === 0 || stripos($value,"https") === 0){
+                            $url = $value;
+                        }else{
+                            $host = isset($pathData['host']) ? $pathData['host'] : "";
+                            $scheme = isset($pathData['scheme']) ? $pathData['scheme'] : "";
+                            $path = "";
+                            if(stripos($value,"/") !== 0){
+                                $pathArr = explode("/",$pathData['path']);
+                                unset($pathArr[count($pathArr)-1]);
+                                $path = "/".implode("/",$pathArr)."/";
+                            }
+                            $url = $scheme."://".$host.$path.$value;
+                        }
                         $this->caiJi($url,$novelId,$type);
                         echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a><br>";
                        // exit;
@@ -159,7 +171,7 @@ class DataController extends AbstractController{
                 $novelModel = new NovelModel();
                 $novelModel->update(array("content"=>$novelContent),array("id" =>$novelId));
             }else{
-                throw new Exception("简介正则出错了");
+                //throw new Exception("简介正则出错了");
             }
         }
 
