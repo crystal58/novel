@@ -85,14 +85,15 @@ class DataController extends AbstractController{
                     $authorRule = $this->getPost("author_rule");
                     preg_match("/$authorRule/isU", $authorData,$authorNovel);
                     //var_dump($authorNovel[1]);exit;
-                    $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
+                    $reg = '/<a[^<>]+href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>(.*?)<\/a>/is';
                     preg_match_all($reg,$authorNovel[1],$authorUrlRet);
+                   // var_dump($authorUrlRet);exit;
                     $authorInfo = explode("_",$this->getPost("author"));
                     $novelClass = explode("_",$this->getPost("novel_class"));
                     $pathData = parse_url($authorUrl);
                     foreach ($authorUrlRet[1] as $key=>$value){
                         $novel = array(
-                            "name" => $authorUrlRet[2][$key],
+                            "name" => strip_tags($authorUrlRet[2][$key]),
                             "author_id" => $authorInfo[0],
                             "author_name"=> $authorInfo[1],
                             "content" => "",
