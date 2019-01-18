@@ -145,7 +145,7 @@ class DataController extends AbstractController{
 
         $content = $this->getPost("content");
         $pathData = parse_url($url);
-        $data = file_get_contents($url);
+        //$data = file_get_contents($url);
         $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
 
         // preg_match("/charset=(.*)\">/is",$data,$codeData);
@@ -158,8 +158,6 @@ class DataController extends AbstractController{
             $data = iconv($code,'UTF-8//IGNORE',$data);
         }
 
-
-//echo $data;
         preg_match("/$postTitle/isU",$data,$result);
 
         if(empty($result)){

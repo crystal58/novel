@@ -285,12 +285,11 @@ class ArticleController extends AbstractController{
         if(empty($result)){
             throw new Exception("正则出错了");
         }
-        //var_dump($result[0]);
         //$reg = '/《<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>》/is';
-        $reg = '/<li>([^：]*)：<a href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a><\/li>/is';
-
+        //$reg = '/<li>([^：]*)：<a href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a><\/li>/is'; //唐诗三百首
+        $reg = '/<li><a href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a><\/li>/is'; //文言文
         preg_match_all($reg,$result[0],$urlRet);
-        //var_dump($urlRet);exit;
+//var_dump($urlRet);exit;
 
         $author = $this->getPost("author");
         if($author){
@@ -298,11 +297,15 @@ class ArticleController extends AbstractController{
             $authorId = $authorInfo[0];
             $authorName = $authorInfo[1];
         }
+        $count = 0;
         $novelTmpModel = new NovelTmpModel();
-        $count = $novelTmpModel->getCount(array("author_id" => $authorId,"class_type"=>2));
+        if(!empty($authorId) && $authorId>0){
+            $count = $novelTmpModel->getCount(array("author_id" => $authorId,"class_type"=>2));
+        }
+
         $count = $count + 1;
         $subjectData = array();
-        foreach ($urlRet[2] as $key=>$value){
+        foreach ($urlRet[1] as $key=>$value){
 
             if(stripos($value,"http") === 0 || stripos($value,"https") === 0){
                 $subjectUrl = $value;
@@ -317,8 +320,12 @@ class ArticleController extends AbstractController{
                 }
                 $subjectUrl = $scheme."://".$host.$path.$value;
             }
-
-            $title = $urlRet[3][$key];
+            //$title = $urlRet[3][$key];
+            $authorRule = "/(.*)\((.*)\)/is";
+            preg_match_all($authorRule,$urlRet[2][$key],$authorData);
+            $title = $authorData[1][0];
+            $authorName =$authorData[2][0];
+           // var_dump($s);exit;
 
             $subjectData[] = array(
                 "novel_id" => $classId,
@@ -330,10 +337,12 @@ class ArticleController extends AbstractController{
                 "code" => $code,
                 "class_type" => 2,
                 "author_id" => isset($authorId) ? $authorId : 0,
-                "author_name" => $urlRet[1][$key]
+                //"author_name" => $urlRet[1][$key]
+                "author_name" => $authorName
             );
             $count++;
-            //if($count == 10)break;
+            //echo json_encode($subjectData);exit;
+           // if($count == 10)break;
             // break;
         }
 

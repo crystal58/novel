@@ -18,7 +18,7 @@ class AuthService extends Service{
         if(empty($userInfo) || $userInfo['pwd'] != md5($params['password'])){
             error_log($userInfo['pwd']);
             error_log(md5($params['password']));
-            error_log($params['password']);
+            //error_log($params['password']);
             throw new Exception("用户名或者密码错误");
         }
         return $userInfo;
