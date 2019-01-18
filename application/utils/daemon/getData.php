@@ -22,7 +22,7 @@ try{
         if(empty($value['title']))continue;
         $url = $value["url"];
         //$data = file_get_contents($url);
-        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+        $data = preg_replace('/\s[\s]+/', '', \YC\Common::readfile($url));
         if($value['code']!= "UTF-8"){
             $data = iconv($value['code'],'UTF-8//IGNORE',$data);
         }

@@ -146,8 +146,8 @@ class DataController extends AbstractController{
         $content = $this->getPost("content");
         $pathData = parse_url($url);
         //$data = file_get_contents($url);
-        $data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
-
+        //$data = preg_replace('/\s[\s]+/', '', file_get_contents($url));
+        $data = preg_replace('/\s[\s]+/', '', \YC\Common::readfile($url));
         // preg_match("/charset=(.*)\">/is",$data,$codeData);
         // echo 111;
         // echo json_encode($codeData);exit;
@@ -176,7 +176,6 @@ class DataController extends AbstractController{
 
         $reg = '/<a\s.*?href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>([^<]+)<\/a>/is';
         preg_match_all($reg,$result[0],$urlRet);
-
 
         $novelTmpModel = new NovelTmpModel();
         $count = $novelTmpModel->getCount(array("novel_id" => $novelId));
@@ -207,6 +206,7 @@ class DataController extends AbstractController{
                 "code" => $code
             );
             $count++;
+          //  if($count == 10)break;
         }
         if(!empty($subjectData)){
             $ret = $novelTmpModel->batchInsert($subjectData);
