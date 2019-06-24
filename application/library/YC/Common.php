@@ -36,6 +36,7 @@ class Common
             "Accept-Charset: UTF-8,*;q=0.5",
             "Cookie: JSESSIONID=BD1418BC3F4CA9084F0C022A98687A09; track_id=117.25.173.111363310326444; seekstr=*78H*..; seekshot=78H..1..75..8..112; __utma=191189370.2036196682.1363308553.1363308553.1363308553.1; __utmb=191189370.3.10.1363308553; __utmc=191189370; __utmz=191189370.1363308553.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); arp_scroll_position=900"
         );
+        $header = array();
         // 初始化一个 cURL 对象
         $curl = curl_init();
         // 设置你需要抓取的URL
