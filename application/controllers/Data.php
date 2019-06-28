@@ -78,22 +78,35 @@ class DataController extends AbstractController{
                    // echo $authorUrl."<br>";
                     $authorData = file_get_contents($authorUrl);
 
+
                     if($code != "UTF-8"){
                         $authorData = iconv($code,'UTF-8//IGNORE',$authorData);
                     }
                      //echo $authorData."<br>";
                     $authorRule = $this->getPost("author_rule");
                     preg_match("/$authorRule/isU", $authorData,$authorNovel);
-                    //var_dump($authorNovel[1]);exit;
-                    $reg = '/<h3><a[^<>]+href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>(.*?)<\/a>/is';
+                    //var_dump($authorNovel);exit;
+                   // $reg = '/<h3><a[^<>]+href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>(.*?)<\/a>/is';
+
+                    $urlRule = $this->getPost("author_url_rule");
+
+                    $reg = '/'.$urlRule.'<a[^<>]+href=[\'|\"]?([^\"\']*)[\'|\"]?[^>]*>(.*?)<\/a>/is';
                     preg_match_all($reg,$authorNovel[1],$authorUrlRet);
-                   // var_dump($authorUrlRet);exit;
+
                     $authorInfo = explode("_",$this->getPost("author"));
                     $novelClass = explode("_",$this->getPost("novel_class"));
                     $pathData = parse_url($authorUrl);
+                    $nameRule = $this->getPost("author_name_rule");
                     foreach ($authorUrlRet[1] as $key=>$value){
+                        $novelName = $authorUrlRet[2][$key];
+                        if(!empty($nameRule)){
+                            preg_match('/'.$nameRule.'/is',$novelName,$matchName);
+                            $novelName = $matchName[1];
+                        }
+                        //$matchName['p'] = $authorUrlRet;
+                        //var_dump($matchName);exit;
                         $novel = array(
-                            "name" => strip_tags($authorUrlRet[2][$key]),
+                            "name" => strip_tags($novelName),
                             "author_id" => $authorInfo[0],
                             "author_name"=> $authorInfo[1],
                             "content" => "",
@@ -104,6 +117,7 @@ class DataController extends AbstractController{
                             "update_time" => time(),
 
                         );
+                        //var_dump($novel);exit;
                         $novelModel = new NovelModel();
                         $novelId = $novelModel->insert($novel);
                         if(stripos($value,"http") === 0 || stripos($value,"https") === 0){
@@ -130,9 +144,6 @@ class DataController extends AbstractController{
                     $this->caiJi($url,$novelId,$type);
                     echo "采集目录成功，<a href='/novel/subject?id={$novelId}'>查看</a>";
                 }
-
-
-
 
              }
         }catch(Exception $e){

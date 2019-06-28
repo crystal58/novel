@@ -19,6 +19,7 @@ class NovelModel extends AbstractModel {
     const NOVEL_CLASS_FANTASY = 5;
     const NOVEL_CLASS_NET = 6;
     const NOVEL_CLASS_GUDIAN = 7;
+    const NOVEL_CLASS_GUOWAI = 8;
 
     public static $_novel_class_type = array(
         self::NOVEL_CLASS_WUXIA => "武侠",
@@ -27,9 +28,9 @@ class NovelModel extends AbstractModel {
         self::NOVEL_CLASS_SCHOOL => "校园",
         self::NOVEL_CLASS_FANTASY => "玄幻",
         self::NOVEL_CLASS_NET => "网络",
-        self::NOVEL_CLASS_GUDIAN => "古典"
+        self::NOVEL_CLASS_GUDIAN => "古典",
+        self::NOVEL_CLASS_GUOWAI => "国外名著"
     );
-
     public static $_novel_flag_txt = array(
         self::NOVEL_RECORDING_INIT => "未录入",
         self::NOVEL_RECORDING_FINISH => "完结",
