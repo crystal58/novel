@@ -52,6 +52,102 @@ class ArticleController extends AbstractController{
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
         }
     }
+    /*
+     * 诗词管理
+     */
+    public function managelistAction(){
+        try{
+            $page = (int)$this->get("page",1);
+            $page = $page>0 ? $page :1;
+            $offset = ($page-1) * self::PAGESIZE;
+
+            $articleModel = new ArticlesModel();
+            $where = array(
+                "AND" => array("status" => ArticlesModel::ARTICLE_CLASS_STATUS),
+                "LIMIT" => array($offset , self::PAGESIZE),
+                "ORDER" => array("id"=>"ASC")
+            );
+            $result = $articleModel->fetchAll($where);
+            $this->_view->list = $result;
+
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+
+    }
+    /**
+     * 诗词管理编辑
+     */
+
+    public function manageeditAction(){
+        try{
+            $id = $this->get("id");
+            if($id > 0) {
+                $articleModel = new ArticlesModel();
+                $info = $articleModel->find($id);
+                $this->_view->info = $info;
+            }else{
+
+
+            }
+            $authorModel = new ArticleAuthorModel();
+            $where = array(
+                "status" => ArticleAuthorModel::AUTHOR_STATUS
+            );
+            $authorList = $authorModel->fetchAll($where);
+            $this->_view->authorList = $authorList;
+
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
+
+    /**
+     * 编辑添加诗词管理
+     */
+    public function managedoAction(){
+        try{
+            $classType = $this->getPost("class_type");
+            $authorId = $this->getPost("author_id");
+            $authorName = $this->getPost("author_name");
+            $name = $this->getPost("title");
+            $content = $this->getPost("content");
+            $description = $this->getPost("description");
+            $translate = $this->getPost("translate");
+            $notes = $this->getPost("notes");
+            $shangxi = $this->getPost("shangxi");
+            $status = $this->getPost("status");
+            $data = array(
+                "name" => $name,
+                "content" => $content,
+                "class_type" => $classType,
+                "author" => $authorName,
+                "author_id" => $authorId,
+                "description" => $description,
+                "translate" => $translate,
+                "notes" => $notes,
+                "shangxi" => $shangxi,
+                "status" => $status
+
+            );
+            $id = $this->getPost("id");
+            $articleModel = new ArticlesModel();
+            if($id > 0){
+                $articleModel->update($data,array("id"=>$id));
+            }else{
+                $id = $articleModel->insert($data);
+            }
+            $config = Yaf_Registry::get("dbconfig");
+            if($classType == 1){
+                $typeTxt = "tangshi";
+            }else{
+                $typeTxt = "ciqu";
+            }
+            $this->redirect($config['web_url']."/".$typeTxt."/detail_".$id.".html");
+        }catch (Exception $e){
+            $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
+        }
+    }
 
     /**
      * 真实目录
