@@ -57,18 +57,22 @@ class ArticleController extends AbstractController{
      */
     public function managelistAction(){
         try{
+            $pageSize = self::PAGESIZE;
             $page = (int)$this->get("page",1);
             $page = $page>0 ? $page :1;
-            $offset = ($page-1) * self::PAGESIZE;
+            $offset = ($page-1) * $pageSize;
+
 
             $articleModel = new ArticlesModel();
             $where = array(
                 "AND" => array("status" => ArticlesModel::ARTICLE_CLASS_STATUS),
-                "LIMIT" => array($offset , self::PAGESIZE),
-                "ORDER" => array("id"=>"ASC")
             );
-            $result = $articleModel->fetchAll($where);
-            $this->_view->list = $result;
+            $articleList = $articleModel->getList($where,$offset,$pageSize,array("id"=>"ASC"),true);
+
+            $this->_view->list = $articleList['list'];
+            $ph = new \YC\Page($articleList['cnt'],$page,self::PAGESIZE);
+            $this->_view->pageHtml = $ph->getPageHtml();
+
 
         }catch (Exception $e){
             $this->processException($this->getRequest()->getControllerName(),$this->getRequest()->getActionName(),$e);
