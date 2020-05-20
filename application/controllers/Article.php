@@ -65,7 +65,10 @@ class ArticleController extends AbstractController{
 
             $articleModel = new ArticlesModel();
             $where = array(
-                "AND" => array("status" => ArticlesModel::ARTICLE_CLASS_STATUS),
+                "AND" => array(
+                    "status" => ArticlesModel::ARTICLE_CLASS_STATUS,
+                    "is_part" => 0
+                    ),
             );
             $articleList = $articleModel->getList($where,$offset,$pageSize,array("id"=>"ASC"),true);
 
