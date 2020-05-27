@@ -92,14 +92,16 @@ class ArticleController extends AbstractController{
             if($id > 0) {
                 $articleModel = new ArticlesModel();
                 $info = $articleModel->find($id);
+                $info['content'] = str_replace("<br>","\r\n",$info['content']);
+                $info['content'] = str_replace(">","",$info['content']);
                 $tmp = explode("font",$info['content']);
                 if(count($tmp)>1){
-                    $info['content'] = $tmp[0];
-                    $info['notes'] = $tmp[2];
-                    $info['translate'] = $tmp[4];
-                    $info['shangxi'] = $tmp[6];
+                    $info['content'] = strip_tags($tmp[0],"<br>");
+                    $info['notes'] = strip_tags($tmp[2],"<br>");
+                    $info['translate'] = strip_tags($tmp[4],"<br>");
+                    $info['shangxi'] = strip_tags($tmp[6],"<br>");
                 }
-
+               // var_dump($info);exit;
                 $this->_view->info = $info;
 
             }else{
