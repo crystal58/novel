@@ -94,6 +94,12 @@ class ArticleController extends AbstractController{
                 $info = $articleModel->find($id);
                 $info['content'] = str_replace("<br>","\r\n",$info['content']);
                 $info['content'] = str_replace(">","",$info['content']);
+                $info['content'] = str_replace("\r\n","<br>",$info['content']);
+                $info['notes'] = str_replace("\r\n","<br>",$info['notes']);
+                $info['translate'] = str_replace("\r\n","<br>",$info['translate']);
+                $info['shangxi'] = str_replace("\r\n","<br>",$info['shangxi']);
+
+
                 $tmp = explode("font",$info['content']);
                 if(count($tmp)>1){
                     $info['content'] = strip_tags($tmp[0],"<br>");
