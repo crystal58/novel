@@ -92,7 +92,16 @@ class ArticleController extends AbstractController{
             if($id > 0) {
                 $articleModel = new ArticlesModel();
                 $info = $articleModel->find($id);
+                $tmp = explode("font",$info['content']);
+                if(count($tmp)>1){
+                    $info['content'] = $info[0];
+                    $info['notes'] = $info[2];
+                    $info['translate'] = $info[4];
+                    $info['shangxi'] = $info[6];
+                }
+
                 $this->_view->info = $info;
+
             }else{
 
 
