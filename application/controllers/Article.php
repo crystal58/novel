@@ -98,7 +98,7 @@ class ArticleController extends AbstractController{
                 $info['notes'] = str_replace("\r\n","<br>",$info['notes']);
                 $info['translate'] = str_replace("\r\n","<br>",$info['translate']);
                 $info['shangxi'] = str_replace("\r\n","<br>",$info['shangxi']);
-
+                $info['content'] = str_replace("<br><br>","<br>",$info['content']);
 
                 $tmp = explode("font",$info['content']);
                 if(count($tmp)>1){
