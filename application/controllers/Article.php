@@ -102,10 +102,10 @@ class ArticleController extends AbstractController{
 
                 $tmp = explode("font",$info['content']);
                 if(count($tmp)>1){
-                    $info['content'] = strip_tags($tmp[0],"<br>");
-                    $info['notes'] = strip_tags($tmp[2],"<br>");
-                    $info['translate'] = strip_tags($tmp[4],"<br>");
-                    $info['shangxi'] = strip_tags($tmp[6],"<br>");
+                    $info['content'] = trim(strip_tags($tmp[0],"<br>"),"<br>");
+                    $info['notes'] = trim(strip_tags($tmp[2],"<br>"),"<br>");
+                    $info['translate'] = trim(strip_tags($tmp[4],"<br>"),"<br>");
+                    $info['shangxi'] = trim(strip_tags($tmp[6],"<br>"),"<br>");
                 }
                // var_dump($info);exit;
                 $this->_view->info = $info;
