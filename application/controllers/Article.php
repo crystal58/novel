@@ -92,16 +92,20 @@ class ArticleController extends AbstractController{
             if($id > 0) {
                 $articleModel = new ArticlesModel();
                 $info = $articleModel->find($id);
-                $info['content'] = str_replace("<br>","\r\n",$info['content']);
-                $info['content'] = str_replace(">","",$info['content']);
-                $info['content'] = str_replace("\r\n","<br>",$info['content']);
-                $info['notes'] = str_replace("\r\n","<br>",$info['notes']);
-                $info['translate'] = str_replace("\r\n","<br>",$info['translate']);
-                $info['shangxi'] = str_replace("\r\n","<br>",$info['shangxi']);
-                $info['content'] = str_replace("<br><br>","<br>",$info['content']);
+
+//                $info['notes'] = str_replace("\r\n","<br>",$info['notes']);
+//                $info['translate'] = str_replace("\r\n","<br>",$info['translate']);
+//                $info['shangxi'] = str_replace("\r\n","<br>",$info['shangxi']);
+               // $info['content'] = str_replace("<br><br>","<br>",$info['content']);
 
                 $tmp = explode("font",$info['content']);
                 if(count($tmp)>1){
+                    $info['content'] = str_replace("<br>","\r\n",$info['content']);
+                    $info['content'] = str_replace(">","",$info['content']);
+                    $info['content'] = str_replace("\r\n","<br>",$info['content']);
+                    $info['content'] = str_replace("<br><br>","<br>",$info['content']);
+
+                    $tmp = explode("font",$info['content']);
                     $info['content'] = trim(strip_tags($tmp[0],"<br>"),"<br>");
                     $info['notes'] = trim(strip_tags($tmp[2],"<br>"),"<br>");
                     $info['translate'] = trim(strip_tags($tmp[4],"<br>"),"<br>");
