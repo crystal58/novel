@@ -56,7 +56,7 @@
                         <option value="<?=$value['id']?>" <?=isset($this->info['author_id'])&&$this->info['author_id']==$value['id']?"selected":""?>><?=$value['author_name']?></option>
                        <?php }?>
                     </select>
-                    <input type="hidden" id="author_name" name="author_name" value="<?=isset($this->info['author'])?$this->info['author']:""?>">
+                    <input type="text" id="author_name" name="author_name" value="<?=isset($this->info['author'])?$this->info['author']:""?>">
                 </div>
             </div>
             <div class="form-group" >
