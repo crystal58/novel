@@ -11,6 +11,7 @@ class ArticlesTypeModel extends AbstractModel {
     const ARTICLE_TYPE_TANG = 1;
     const ARTICLE_TYPE_SONG = 2;
     const ARTICLE_TYPE_YUAN = 4;
+    const ARTICLE_TYPE_WENYAN = 5;
     const ARTICLE_TYPE_SANBAI = 15;
     const ARTICLE_TYPE_QUAN = 16;
     const ARTICLE_TYPE_SANBAI2 = 17;
@@ -31,6 +32,7 @@ class ArticlesTypeModel extends AbstractModel {
         self::ARTICLE_TYPE_TANG => "唐诗",
         self::ARTICLE_TYPE_SONG=>"宋词",
         self::ARTICLE_TYPE_YUAN=>"元曲",
+        self::ARTICLE_TYPE_WENYAN => "文言文",
         self::ARTICLE_TYPE_SANBAI => "唐诗三百首",
         self::ARTICLE_TYPE_QUAN => "全唐诗",
         self::ARTICLE_TYPE_SANBAI2 => "唐诗三百首",
