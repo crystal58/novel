@@ -37,7 +37,7 @@
             <tr>
                 <td><?=$value['id']?></td>
                 <td><a target="_blank" href="<?=$this->web_url?>/tangshi/detail_<?=$value['id']?>.html"><?=$value['name']?></a></td>
-                <td><?=$value['author']?></td>
+                <td><span <?php if($value['author_id']>0){?>style="color: red"<?php }?>><?=$value['author']?></span></td>
                 <td><?=substr(strip_tags($value['content']),0,30)?>...</td>
                 <td><?=substr(strip_tags($value['description']),0,30)?>...</td>
                 <td><?=substr(strip_tags($value['translate']),0,30)?>...</td>
